@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// TABLA: usuarios
+model Usuario {
+  usuarioId     String   @id @default(dbgenerated("gen_random_uuid()")) @map("usuario_id") @db.Uuid
+  cognitoSub    String?  @unique @map("cognito_sub") @db.VarChar(255)
+  email         String   @unique @db.VarChar(255)
+  nombre        String   @db.VarChar(255)
+  passwordHash  String?  @map("password_hash") @db.VarChar(255)
+  rol           RolUsuario
+  activo        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  medicos       Medico[]
+  citasCreadas  Cita[]   @relation("CitaCreadaPor")
+
+  @@map("usuarios")
+}
+
+// TABLA: pacientes
+model Paciente {
+  pacienteId       String   @id @default(dbgenerated("gen_random_uuid()")) @map("paciente_id") @db.Uuid
+  cognitoSub       String?  @unique @map("cognito_sub") @db.VarChar(255)
+  email            String   @unique @db.VarChar(255)
+  passwordHash     String   @map("password_hash") @db.VarChar(255)
+  nombre           String   @db.VarChar(255)
+  fechaNacimiento  DateTime @map("fecha_nacimiento") @db.Date
+  telefono         String   @db.VarChar(20)
+  folio            String   @unique @db.VarChar(50)
+  deviceToken      String?  @map("device_token") @db.VarChar(255)
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  citas            Cita[]
+  expedientes      Expediente[]
+  notificaciones   Notificacion[]
+
+  @@index([email], map: "idx_pacientes_email")
+  @@index([folio], map: "idx_pacientes_folio")
+  @@map("pacientes")
+}
+
+// TABLA: medicos
+model Medico {
+  medicoId       String   @id @default(dbgenerated("gen_random_uuid()")) @map("medico_id") @db.Uuid
+  usuarioId      String?  @map("usuario_id") @db.Uuid
+  email          String   @unique @db.VarChar(255)
+  passwordHash   String   @map("password_hash") @db.VarChar(255)
+  nombre         String   @db.VarChar(255)
+  especialidad   String   @db.VarChar(255)
+  horario        Json     @db.JsonB
+  costoConsulta  Decimal  @map("costo_consulta") @db.Decimal(10, 2)
+  fotoUrl        String?  @map("foto_url") @db.VarChar(500)
+  activo         Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  usuario        Usuario?  @relation(fields: [usuarioId], references: [usuarioId])
+  citas          Cita[]
+  expedientes    Expediente[]
+
+  @@index([especialidad], map: "idx_medicos_especialidad")
+  @@index([email], map: "idx_medicos_email")
+  @@map("medicos")
+}
+
+// TABLA: citas
+model Cita {
+  citaId              String      @id @default(dbgenerated("gen_random_uuid()")) @map("cita_id") @db.Uuid
+  pacienteId          String      @map("paciente_id") @db.Uuid
+  medicoId            String      @map("medico_id") @db.Uuid
+  fechaHora           DateTime    @map("fecha_hora")
+  duracionMin         Int         @default(30) @map("duracion_min")
+  estado              EstadoCita
+  motivo              String?     @db.Text
+  motivoCancelacion   String?     @map("motivo_cancelacion") @db.Text
+  creadoPor           String?     @map("creado_por") @db.Uuid
+  createdAt           DateTime    @default(now()) @map("created_at")
+
+  paciente            Paciente    @relation(fields: [pacienteId], references: [pacienteId])
+  medico              Medico      @relation(fields: [medicoId], references: [medicoId])
+  creador             Usuario?    @relation("CitaCreadaPor", fields: [creadoPor], references: [usuarioId])
+  expedientes         Expediente[]
+  notificaciones      Notificacion[]
+
+  @@index([medicoId, fechaHora], map: "idx_citas_medico_fecha")
+  @@index([pacienteId], map: "idx_citas_paciente")
+  @@map("citas")
+}
+
+// TABLA: expedientes
+model Expediente {
+  expedienteId    String   @id @default(dbgenerated("gen_random_uuid()")) @map("expediente_id") @db.Uuid
+  pacienteId      String   @map("paciente_id") @db.Uuid
+  medicoId        String   @map("medico_id") @db.Uuid
+  citaId          String?  @map("cita_id") @db.Uuid
+  motivoConsulta  String   @map("motivo_consulta") @db.Text
+  diagnostico     String   @db.Text
+  tratamiento     String   @db.Text
+  observaciones   String?  @db.Text
+  archivosS3      String[] @map("archivos_s3")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  paciente        Paciente @relation(fields: [pacienteId], references: [pacienteId])
+  medico          Medico   @relation(fields: [medicoId], references: [medicoId])
+  cita            Cita?    @relation(fields: [citaId], references: [citaId])
+
+  @@index([pacienteId], map: "idx_expedientes_paciente")
+  @@map("expedientes")
+}
+
+// TABLA: notificaciones
+model Notificacion {
+  notificacionId  String              @id @default(dbgenerated("gen_random_uuid()")) @map("notificacion_id") @db.Uuid
+  pacienteId      String              @map("paciente_id") @db.Uuid
+  citaId          String?             @map("cita_id") @db.Uuid
+  tipo            TipoNotificacion
+  canal           CanalNotificacion
+  estado          EstadoNotificacion
+  intentos        Int                 @default(0)
+  enviadoEn       DateTime?           @map("enviado_en")
+  createdAt       DateTime            @default(now()) @map("created_at")
+
+  paciente        Paciente            @relation(fields: [pacienteId], references: [pacienteId])
+  cita            Cita?               @relation(fields: [citaId], references: [citaId])
+
+  @@index([pacienteId], map: "idx_notificaciones_paciente")
+  @@map("notificaciones")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum RolUsuario {
+  recepcionista
+  medico
+  director
+
+  @@map("rol_usuario")
+}
+
+enum EstadoCita {
+  programada
+  completada
+  cancelada
+
+  @@map("estado_cita")
+}
+
+enum TipoNotificacion {
+  confirmacion
+  recordatorio
+  cancelacion
+
+  @@map("tipo_notificacion")
+}
+
+enum CanalNotificacion {
+  email
+  push
+
+  @@map("canal_notificacion")
+}
+
+enum EstadoNotificacion {
+  enviada
+  fallida
+  reintentando
+
+  @@map("estado_notificacion")
+}
