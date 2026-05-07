@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar">
+  <div class="welcome">
+    <h1>Bienvenida, Dra. Gonzalez</h1>
+    <div class="date"><i class="fa-regular fa-calendar"></i> miercoles, 6 de mayo de 2026 · 10:24 p.m.</div>
+  </div>
+  <div><button class="btn-blue"><i class="fa-solid fa-plus"></i> Nueva Cita</button></div>
+</div>
+
+<div class="stats">
+  <div class="stat-card bg-blue"><h4>Pacientes Hoy</h4><h2>12</h2><p>+2 vs ayer</p></div>
+  <div class="stat-card bg-yellow"><h4>Citas Pendientes</h4><h2>3</h2><p>Requieren confirmacion</p></div>
+  <div class="stat-card bg-red"><h4>Canceladas Hoy</h4><h2>2</h2><p>12% del total</p></div>
+</div>
+
+<div class="main-grid">
+  <section class="card">
+    <div class="card-header"><h3>Agenda de Hoy</h3><button class="view-btn">+ Nueva Cita</button></div>
+    <div class="card-body">
+      {% for a in appointments %}
+      <div class="appointment">
+        <div class="appointment-left">
+          <div class="time"><h4>{{ a.time }}</h4><p>{{ a.room }}</p></div>
+          <div class="patient"><h5>{{ a.patient }}</h5><p>{{ a.type }}</p></div>
+        </div>
+        <div class="appointment-left">
+          <span class="status {% if a.status == 'Confirmada' %}confirmed{% else %}pending{% endif %}">{{ a.status }}</span>
+          <button class="view-btn">Ver</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <aside style="display:flex; flex-direction:column; gap:14px">
+    <div class="panel">
+      <h3>Acciones Rapidas</h3>
+      <div class="quick-actions">
+        <button class="primary">Nueva Cita</button>
+        <button>Buscar Paciente</button>
+        <button>Ver Agenda Semanal</button>
+      </div>
+    </div>
+    <div class="panel" style="background:#fefce8;border-color:#fde047">
+      <h3 style="color:#92400e">Alertas</h3>
+      <p>3 citas sin confirmar</p>
+      <p>2 expedientes incompletos</p>
+    </div>
+  </aside>
+</div>
+{% endblock %}

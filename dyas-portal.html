@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DYAS – Portal Médico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root,[data-theme="light"]{
+  --color-bg:#f0f4ff;
+  --color-surface:#ffffff;
+  --color-surface-2:#f7f9ff;
+  --color-surface-offset:#eef2fc;
+  --color-divider:#e2e8f5;
+  --color-border:#d1d9ee;
+  --color-text:#1a1f36;
+  --color-text-muted:#5a6481;
+  --color-text-faint:#9aa3be;
+  --color-primary:#2563eb;
+  --color-primary-hover:#1d4ed8;
+  --color-primary-active:#1e40af;
+  --color-primary-subtle:#dbeafe;
+  --color-success:#16a34a;
+  --color-success-subtle:#dcfce7;
+  --color-warning:#d97706;
+  --color-warning-subtle:#fef3c7;
+  --color-error:#dc2626;
+  --color-error-subtle:#fee2e2;
+  --color-sidebar-bg:#1e3a8a;
+  --color-sidebar-hover:#1d4ed8;
+  --color-sidebar-active:#2563eb;
+  --color-sidebar-text:#bfdbfe;
+  --color-sidebar-text-active:#ffffff;
+  --shadow-sm:0 1px 3px rgba(30,58,138,.10);
+  --shadow-md:0 4px 16px rgba(30,58,138,.12);
+  --shadow-lg:0 12px 32px rgba(30,58,138,.16);
+  --radius-sm:.375rem;
+  --radius-md:.5rem;
+  --radius-lg:.75rem;
+  --radius-xl:1rem;
+  --radius-full:9999px;
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;
+  --space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;
+  --space-12:3rem;--space-16:4rem;
+  --text-xs:clamp(.75rem,.7rem + .25vw,.875rem);
+  --text-sm:clamp(.875rem,.8rem + .35vw,1rem);
+  --text-base:clamp(1rem,.95rem + .25vw,1.125rem);
+  --text-lg:clamp(1.125rem,1rem + .75vw,1.5rem);
+  --text-xl:clamp(1.5rem,1.2rem + 1.25vw,2.25rem);
+  --font-body:'Inter',system-ui,sans-serif;
+  --transition:180ms cubic-bezier(.16,1,.3,1);
+  --sidebar-width:220px;
+  --header-height:60px;
+}
+[data-theme="dark"]{
+  --color-bg:#0f172a;
+  --color-surface:#1e293b;
+  --color-surface-2:#263347;
+  --color-surface-offset:#1a2640;
+  --color-divider:#2d3f5c;
+  --color-border:#334155;
+  --color-text:#e2e8f0;
+  --color-text-muted:#94a3b8;
+  --color-text-faint:#475569;
+  --color-primary:#3b82f6;
+  --color-primary-hover:#2563eb;
+  --color-primary-active:#1d4ed8;
+  --color-primary-subtle:rgba(59,130,246,.15);
+  --color-success:#22c55e;
+  --color-success-subtle:rgba(34,197,94,.15);
+  --color-warning:#f59e0b;
+  --color-warning-subtle:rgba(245,158,11,.15);
+  --color-error:#ef4444;
+  --color-error-subtle:rgba(239,68,68,.15);
+  --color-sidebar-bg:#0f1e3d;
+  --color-sidebar-hover:#1e3a8a;
+  --color-sidebar-active:#2563eb;
+  --color-sidebar-text:#93c5fd;
+  --color-sidebar-text-active:#ffffff;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:0 4px 16px rgba(0,0,0,.4);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.5);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{min-height:100dvh;font-family:var(--font-body);font-size:var(--text-sm);color:var(--color-text);background:var(--color-bg);transition:background var(--transition),color var(--transition)}
+img,svg{display:block;max-width:100%}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+
+/* ============================================================
+   AUTH OVERLAY
+   ============================================================ */
+#auth-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 40%,#0ea5e9 100%);
+  display:flex;align-items:center;justify-content:center;
+  padding:var(--space-4);
+}
+.auth-card{
+  background:#fff;border-radius:var(--radius-xl);
+  box-shadow:0 24px 64px rgba(0,0,0,.25);
+  padding:var(--space-10) var(--space-8);
+  width:100%;max-width:420px;
+  animation:slideUp .4s cubic-bezier(.16,1,.3,1);
+}
+[data-theme="dark"] .auth-card{background:var(--color-surface);color:var(--color-text)}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.auth-logo{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-8)}
+.auth-logo-icon{width:44px;height:44px;background:var(--color-primary);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;color:#fff}
+.auth-logo-name{font-size:var(--text-lg);font-weight:700;color:#1a1f36}
+[data-theme="dark"] .auth-logo-name{color:var(--color-text)}
+.auth-logo-sub{font-size:var(--text-xs);color:var(--color-text-muted)}
+.auth-tabs{display:flex;gap:var(--space-2);margin-bottom:var(--space-6);background:#f1f5f9;border-radius:var(--radius-md);padding:var(--space-1)}
+[data-theme="dark"] .auth-tabs{background:var(--color-surface-offset)}
+.auth-tab{flex:1;padding:var(--space-2) var(--space-4);border-radius:calc(var(--radius-md) - 2px);font-size:var(--text-sm);font-weight:500;color:var(--color-text-muted);transition:all var(--transition);text-align:center}
+.auth-tab.active{background:#fff;color:var(--color-primary);box-shadow:var(--shadow-sm)}
+[data-theme="dark"] .auth-tab.active{background:var(--color-surface);color:var(--color-primary)}
+.auth-title{font-size:var(--text-lg);font-weight:700;margin-bottom:var(--space-1)}
+.auth-sub{font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--space-6)}
+.form-group{margin-bottom:var(--space-4)}
+.form-label{display:block;font-size:var(--text-xs);font-weight:600;color:var(--color-text-muted);margin-bottom:var(--space-2);text-transform:uppercase;letter-spacing:.04em}
+.form-input{width:100%;padding:var(--space-3) var(--space-4);border:1.5px solid var(--color-border);border-radius:var(--radius-md);font-size:var(--text-sm);background:var(--color-surface-2);color:var(--color-text);transition:border-color var(--transition),box-shadow var(--transition);outline:none}
+.form-input:focus{border-color:var(--color-primary);box-shadow:0 0 0 3px var(--color-primary-subtle)}
+.form-input::placeholder{color:var(--color-text-faint)}
+.role-selector{display:flex;gap:var(--space-3);margin-bottom:var(--space-5)}
+.role-btn{flex:1;padding:var(--space-3);border:2px solid var(--color-border);border-radius:var(--radius-md);display:flex;flex-direction:column;align-items:center;gap:var(--space-2);cursor:pointer;transition:all var(--transition);background:var(--color-surface-2)}
+.role-btn:hover{border-color:var(--color-primary);background:var(--color-primary-subtle)}
+.role-btn.selected{border-color:var(--color-primary);background:var(--color-primary-subtle);color:var(--color-primary)}
+.role-btn span{font-size:var(--text-xs);font-weight:600}
+.btn-primary{width:100%;padding:var(--space-3) var(--space-6);background:var(--color-primary);color:#fff;border-radius:var(--radius-md);font-size:var(--text-sm);font-weight:600;transition:background var(--transition),transform var(--transition),box-shadow var(--transition);border:none;cursor:pointer}
+.btn-primary:hover{background:var(--color-primary-hover);box-shadow:var(--shadow-md)}
+.btn-primary:active{transform:scale(.98)}
+.auth-error{background:var(--color-error-subtle);color:var(--color-error);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);font-size:var(--text-xs);margin-bottom:var(--space-4);display:none}
+.auth-demo{margin-top:var(--space-4);padding:var(--space-3);background:var(--color-primary-subtle);border-radius:var(--radius-md);font-size:var(--text-xs);color:var(--color-primary)}
+.auth-switch{text-align:center;margin-top:var(--space-5);font-size:var(--text-xs);color:var(--color-text-muted)}
+.auth-switch a{color:var(--color-primary);font-weight:600;cursor:pointer}
+.auth-switch a:hover{text-decoration:underline}
+
+/* ============================================================
+   APP LAYOUT
+   ============================================================ */
+#app{display:none;min-height:100dvh}
+#app.visible{display:flex}
+.sidebar{
+  width:var(--sidebar-width);
+  background:var(--color-sidebar-bg);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;z-index:100;
+  transition:width var(--transition),background var(--transition);
+  overflow:hidden;
+}
+.sidebar-logo{
+  padding:var(--space-5) var(--space-5);
+  display:flex;align-items:center;gap:var(--space-3);
+  border-bottom:1px solid rgba(255,255,255,.08);
+  min-height:var(--header-height);
+}
+.logo-icon{width:34px;height:34px;background:var(--color-primary);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column}
+.logo-name{font-size:var(--text-base);font-weight:700;color:#fff;line-height:1}
+.logo-sub{font-size:.625rem;color:var(--color-sidebar-text);line-height:1.4;margin-top:2px}
+.sidebar-nav{padding:var(--space-4) var(--space-3);flex:1;overflow-y:auto}
+.nav-section-label{font-size:.625rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(148,163,184,.5);padding:var(--space-3) var(--space-3) var(--space-2);margin-top:var(--space-2)}
+.nav-item{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-3);border-radius:var(--radius-md);color:var(--color-sidebar-text);font-size:var(--text-xs);font-weight:500;cursor:pointer;transition:all var(--transition);white-space:nowrap;margin-bottom:2px}
+.nav-item:hover{background:var(--color-sidebar-hover);color:var(--color-sidebar-text-active)}
+.nav-item.active{background:var(--color-sidebar-active);color:var(--color-sidebar-text-active);box-shadow:0 4px 12px rgba(37,99,235,.35)}
+.nav-item i{flex-shrink:0;width:18px;height:18px}
+.nav-badge{margin-left:auto;background:var(--color-error);color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:var(--radius-full)}
+.sidebar-user{
+  padding:var(--space-4) var(--space-4);
+  border-top:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;gap:var(--space-3);
+}
+.user-avatar{width:36px;height:36px;border-radius:var(--radius-full);background:var(--color-primary);display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);font-weight:700;color:#fff;flex-shrink:0}
+.user-info{flex:1;overflow:hidden}
+.user-name{font-size:var(--text-xs);font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:.625rem;color:var(--color-sidebar-text)}
+.logout-btn{color:var(--color-sidebar-text);opacity:.7;transition:opacity var(--transition);padding:var(--space-1);border-radius:var(--radius-sm)}
+.logout-btn:hover{opacity:1;color:#fff}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main{margin-left:var(--sidebar-width);flex:1;display:flex;flex-direction:column;min-height:100dvh}
+.topbar{
+  height:var(--header-height);
+  background:var(--color-surface);
+  border-bottom:1px solid var(--color-divider);
+  padding:0 var(--space-6);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+  box-shadow:var(--shadow-sm);
+}
+.topbar-left{display:flex;align-items:center;gap:var(--space-3)}
+.page-title{font-size:var(--text-base);font-weight:700;color:var(--color-text)}
+.page-subtitle{font-size:var(--text-xs);color:var(--color-text-muted)}
+.topbar-right{display:flex;align-items:center;gap:var(--space-3)}
+.topbar-btn{width:36px;height:36px;border-radius:var(--radius-md);border:1px solid var(--color-border);background:var(--color-surface-2);display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);transition:all var(--transition)}
+.topbar-btn:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-subtle)}
+.topbar-btn i{width:18px;height:18px}
+.badge-dot{position:relative}
+.badge-dot::after{content:'';position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--color-error);border:2px solid var(--color-surface)}
+.content{padding:var(--space-6);flex:1}
+
+/* ============================================================
+   VIEWS
+   ============================================================ */
+.view{display:none}
+.view.active{display:block}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-4);margin-bottom:var(--space-6)}
+.stat-card{background:var(--color-surface);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-sm);border:1px solid var(--color-divider);transition:box-shadow var(--transition)}
+.stat-card:hover{box-shadow:var(--shadow-md)}
+.stat-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--space-4)}
+.stat-label{font-size:var(--text-xs);font-weight:600;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.04em}
+.stat-icon{width:40px;height:40px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center}
+.stat-icon i{width:20px;height:20px}
+.stat-icon.blue{background:var(--color-primary-subtle);color:var(--color-primary)}
+.stat-icon.green{background:var(--color-success-subtle);color:var(--color-success)}
+.stat-icon.yellow{background:var(--color-warning-subtle);color:var(--color-warning)}
+.stat-icon.red{background:var(--color-error-subtle);color:var(--color-error)}
+.stat-value{font-size:var(--text-xl);font-weight:700;color:var(--color-text);font-variant-numeric:tabular-nums;line-height:1;margin-bottom:var(--space-2)}
+.stat-sub{font-size:var(--text-xs);color:var(--color-text-muted);display:flex;align-items:center;gap:var(--space-1)}
+.stat-sub.up{color:var(--color-success)}
+.stat-sub.down{color:var(--color-error)}
+.stat-progress{margin-top:var(--space-3);height:4px;background:var(--color-divider);border-radius:var(--radius-full);overflow:hidden}
+.stat-progress-bar{height:100%;border-radius:var(--radius-full);background:var(--color-primary);transition:width .8s cubic-bezier(.16,1,.3,1)}
+
+/* GRID LAYOUT */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5)}
+.grid-3-1{display:grid;grid-template-columns:1fr 320px;gap:var(--space-5)}
+
+/* CARDS */
+.card{background:var(--color-surface);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-sm);border:1px solid var(--color-divider)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)}
+.card-title{font-size:var(--text-sm);font-weight:700;color:var(--color-text);display:flex;align-items:center;gap:var(--space-2)}
+.card-title i{width:16px;height:16px;color:var(--color-primary)}
+.card-subtitle{font-size:var(--text-xs);color:var(--color-text-muted)}
+.card-action{font-size:var(--text-xs);color:var(--color-primary);font-weight:600;cursor:pointer;padding:var(--space-2) var(--space-3);border-radius:var(--radius-md);transition:background var(--transition)}
+.card-action:hover{background:var(--color-primary-subtle)}
+
+/* AGENDA LIST */
+.agenda-item{display:flex;align-items:center;gap:var(--space-4);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);transition:background var(--transition);cursor:pointer;margin-bottom:var(--space-2);border:1px solid transparent}
+.agenda-item:hover{background:var(--color-surface-2);border-color:var(--color-divider)}
+.agenda-time-block{background:var(--color-primary);color:#fff;border-radius:var(--radius-md);width:64px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;font-size:var(--text-xs);line-height:1.1}
+.agenda-time-block span{font-size:.6rem;font-weight:400;opacity:.85}
+.agenda-info{flex:1;min-width:0}
+.agenda-patient{font-size:var(--text-sm);font-weight:600;color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:var(--space-1)}
+.agenda-patient i{width:14px;height:14px;color:var(--color-text-muted)}
+.agenda-type{font-size:var(--text-xs);color:var(--color-text-muted);display:flex;align-items:center;gap:var(--space-1);margin-top:2px}
+.agenda-type i{width:12px;height:12px}
+.agenda-actions{display:flex;align-items:center;gap:var(--space-2);flex-shrink:0}
+
+/* STATUS BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-full);font-size:.7rem;font-weight:600;white-space:nowrap}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.badge-confirmed{background:var(--color-success-subtle);color:var(--color-success)}
+.badge-confirmed::before{background:var(--color-success)}
+.badge-pending{background:var(--color-warning-subtle);color:var(--color-warning)}
+.badge-pending::before{background:var(--color-warning)}
+.badge-cancelled{background:var(--color-error-subtle);color:var(--color-error)}
+.badge-cancelled::before{background:var(--color-error)}
+.badge-blue{background:var(--color-primary-subtle);color:var(--color-primary)}
+
+/* ICON BUTTONS */
+.icon-btn{width:30px;height:30px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);transition:all var(--transition);flex-shrink:0}
+.icon-btn:hover{background:var(--color-surface-offset);color:var(--color-text)}
+.icon-btn.danger:hover{background:var(--color-error-subtle);color:var(--color-error)}
+.icon-btn i{width:15px;height:15px}
+
+/* CALENDAR */
+.mini-cal{width:100%}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)}
+.cal-month{font-size:var(--text-sm);font-weight:700;color:var(--color-text)}
+.cal-nav{width:28px;height:28px;border-radius:var(--radius-md);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;color:var(--color-text-muted);cursor:pointer;transition:all var(--transition);background:var(--color-surface-2)}
+.cal-nav:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-subtle)}
+.cal-nav i{width:14px;height:14px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-day-label{font-size:.625rem;font-weight:600;text-align:center;color:var(--color-text-faint);text-transform:uppercase;padding-bottom:var(--space-2)}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:var(--text-xs);border-radius:var(--radius-sm);cursor:pointer;transition:all var(--transition);color:var(--color-text-muted)}
+.cal-day:hover{background:var(--color-surface-offset);color:var(--color-text)}
+.cal-day.other-month{color:var(--color-text-faint);opacity:.5}
+.cal-day.today{background:var(--color-primary);color:#fff;font-weight:700}
+.cal-day.has-events{position:relative}
+.cal-day.has-events::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--color-warning)}
+.cal-day.today.has-events::after{background:#fff}
+.cal-day.selected{background:var(--color-primary-subtle);color:var(--color-primary);font-weight:700}
+.cal-selected-date{margin-top:var(--space-4);padding:var(--space-3) var(--space-4);background:var(--color-surface-2);border-radius:var(--radius-md);font-size:var(--text-xs);color:var(--color-text-muted);border:1px solid var(--color-divider)}
+.cal-selected-date strong{color:var(--color-text);display:block;margin-top:2px}
+
+/* QUICK ACTIONS */
+.quick-actions{display:flex;flex-direction:column;gap:var(--space-2);margin-top:var(--space-4)}
+.quick-btn{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);font-size:var(--text-xs);font-weight:600;cursor:pointer;transition:all var(--transition);text-align:left;width:100%;border:1px solid transparent}
+.quick-btn.primary{background:var(--color-primary);color:#fff}
+.quick-btn.primary:hover{background:var(--color-primary-hover);box-shadow:var(--shadow-md)}
+.quick-btn.outline{background:var(--color-surface-2);border-color:var(--color-border);color:var(--color-text)}
+.quick-btn.outline:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-subtle)}
+.quick-btn i{width:16px;height:16px;flex-shrink:0}
+
+/* ALERTS */
+.alerts-section{margin-top:var(--space-4)}
+.alert-item{display:flex;align-items:flex-start;gap:var(--space-3);padding:var(--space-3) var(--space-4);border-radius:var(--radius-md);margin-bottom:var(--space-2);font-size:var(--text-xs)}
+.alert-item i{width:16px;height:16px;flex-shrink:0;margin-top:1px}
+.alert-item.warning{background:var(--color-warning-subtle);color:var(--color-warning)}
+.alert-item.info{background:var(--color-primary-subtle);color:var(--color-primary)}
+.alert-item-text strong{display:block;font-weight:600;margin-bottom:2px}
+
+/* PROGRESS BAR TOPBAR */
+.progress-section{display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-xs);color:var(--color-text-muted)}
+.progress-bar-wrap{width:120px;height:6px;background:var(--color-divider);border-radius:var(--radius-full);overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--color-primary);border-radius:var(--radius-full)}
+
+/* PATIENTS TABLE */
+.patients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--space-4)}
+.patient-card{background:var(--color-surface);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-sm);border:1px solid var(--color-divider);cursor:pointer;transition:all var(--transition)}
+.patient-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);border-color:var(--color-primary)}
+.patient-card-top{display:flex;align-items:flex-start;gap:var(--space-4);margin-bottom:var(--space-4)}
+.patient-avatar-circle{width:48px;height:48px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:var(--text-base);font-weight:700;color:#fff;flex-shrink:0}
+.patient-name{font-size:var(--text-sm);font-weight:700;color:var(--color-text);margin-bottom:var(--space-1)}
+.patient-meta{font-size:var(--text-xs);color:var(--color-text-muted);display:flex;flex-wrap:wrap;gap:var(--space-2)}
+.patient-meta-item{display:flex;align-items:center;gap:3px}
+.patient-meta-item i{width:11px;height:11px}
+.patient-divider{height:1px;background:var(--color-divider);margin:var(--space-3) 0}
+.patient-footer{display:flex;align-items:center;justify-content:space-between}
+.patient-last-visit{font-size:var(--text-xs);color:var(--color-text-muted);display:flex;align-items:center;gap:4px}
+.patient-last-visit i{width:12px;height:12px}
+.patient-conds{display:flex;gap:var(--space-2)}
+
+/* SEARCH BAR */
+.search-bar{display:flex;align-items:center;gap:var(--space-2);background:var(--color-surface-2);border:1.5px solid var(--color-border);border-radius:var(--radius-md);padding:var(--space-2) var(--space-4);flex:1;max-width:400px;transition:border-color var(--transition),box-shadow var(--transition)}
+.search-bar:focus-within{border-color:var(--color-primary);box-shadow:0 0 0 3px var(--color-primary-subtle)}
+.search-bar i{width:16px;height:16px;color:var(--color-text-faint);flex-shrink:0}
+.search-bar input{border:none;background:none;outline:none;flex:1;font-size:var(--text-xs);color:var(--color-text)}
+.search-bar input::placeholder{color:var(--color-text-faint)}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-5);border-radius:var(--radius-md);font-size:var(--text-xs);font-weight:600;cursor:pointer;transition:all var(--transition);border:none;white-space:nowrap}
+.btn-sm{padding:var(--space-1) var(--space-3);font-size:var(--text-xs)}
+.btn-blue{background:var(--color-primary);color:#fff}
+.btn-blue:hover{background:var(--color-primary-hover);box-shadow:var(--shadow-md)}
+.btn-outline{background:var(--color-surface-2);border:1px solid var(--color-border);color:var(--color-text)}
+.btn-outline:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-subtle)}
+.btn i{width:15px;height:15px}
+
+/* WEEK SUMMARY */
+.week-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-3)}
+.week-stat{background:var(--color-surface-2);border-radius:var(--radius-md);padding:var(--space-4);text-align:center;border:1px solid var(--color-divider)}
+.week-stat-val{font-size:var(--text-lg);font-weight:700;color:var(--color-text);font-variant-numeric:tabular-nums}
+.week-stat-label{font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-1)}
+.week-stat.blue .week-stat-val{color:var(--color-primary)}
+.week-stat.green .week-stat-val{color:var(--color-success)}
+.week-stat.yellow .week-stat-val{color:var(--color-warning)}
+.week-stat.red .week-stat-val{color:var(--color-error)}
+
+/* PATIENT PORTAL */
+.portal-selector{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-6)}
+.portal-btn{padding:var(--space-6);background:var(--color-surface);border:2px solid var(--color-border);border-radius:var(--radius-xl);text-align:center;cursor:pointer;transition:all var(--transition)}
+.portal-btn:hover,.portal-btn.active{border-color:var(--color-primary);background:var(--color-primary-subtle)}
+.portal-btn i{width:40px;height:40px;color:var(--color-primary);margin:0 auto var(--space-3)}
+.portal-btn-title{font-size:var(--text-sm);font-weight:700;color:var(--color-text);margin-bottom:var(--space-1)}
+.portal-btn-desc{font-size:var(--text-xs);color:var(--color-text-muted)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:var(--space-4);opacity:0;pointer-events:none;transition:opacity var(--transition);backdrop-filter:blur(4px)}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-box{background:var(--color-surface);border-radius:var(--radius-xl);padding:var(--space-8);width:100%;max-width:480px;box-shadow:var(--shadow-lg);transform:scale(.95);transition:transform var(--transition)}
+.modal-overlay.open .modal-box{transform:scale(1)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-6)}
+.modal-title{font-size:var(--text-base);font-weight:700;color:var(--color-text)}
+.modal-close{color:var(--color-text-muted);cursor:pointer;width:32px;height:32px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;transition:all var(--transition)}
+.modal-close:hover{background:var(--color-surface-offset);color:var(--color-text)}
+.modal-close i{width:18px;height:18px}
+.modal-form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}
+.modal-form-row .form-group{margin-bottom:0}
+
+/* EMPTY STATE */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-16) var(--space-8);text-align:center;color:var(--color-text-muted)}
+.empty-icon{width:56px;height:56px;border-radius:var(--radius-full);background:var(--color-surface-offset);display:flex;align-items:center;justify-content:center;margin-bottom:var(--space-4)}
+.empty-icon i{width:28px;height:28px;color:var(--color-text-faint)}
+.empty-title{font-size:var(--text-sm);font-weight:700;color:var(--color-text);margin-bottom:var(--space-2)}
+.empty-desc{font-size:var(--text-xs);max-width:32ch;margin-bottom:var(--space-5)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--color-border);border-radius:var(--radius-full)}
+::-webkit-scrollbar-thumb:hover{background:var(--color-text-faint)}
+
+/* PAGE HEADER */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-6)}
+.page-heading{font-size:var(--text-xl);font-weight:700;color:var(--color-text)}
+.page-heading-sub{font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-1);display:flex;align-items:center;gap:var(--space-1)}
+.page-heading-sub i{width:14px;height:14px}
+
+/* WELCOME BANNER */
+.welcome-banner{background:linear-gradient(135deg,var(--color-primary) 0%,#0ea5e9 100%);border-radius:var(--radius-xl);padding:var(--space-6) var(--space-8);margin-bottom:var(--space-6);color:#fff;display:flex;align-items:center;justify-content:space-between;overflow:hidden;position:relative}
+.welcome-banner::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.07)}
+.welcome-title{font-size:var(--text-xl);font-weight:700;margin-bottom:var(--space-1)}
+.welcome-sub{font-size:var(--text-xs);opacity:.85;display:flex;align-items:center;gap:var(--space-2)}
+.welcome-sub i{width:14px;height:14px}
+.welcome-progress{text-align:right;flex-shrink:0}
+.welcome-progress-label{font-size:var(--text-xs);opacity:.8;margin-bottom:var(--space-2)}
+.welcome-progress-val{font-size:var(--text-lg);font-weight:700}
+
+/* TABS FOR AGENDA */
+.agenda-day-nav{display:flex;align-items:center;gap:var(--space-2)}
+.day-nav-btn{width:28px;height:28px;border-radius:var(--radius-md);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background var(--transition);background:transparent;color:#fff}
+.day-nav-btn:hover{background:rgba(255,255,255,.2)}
+.day-nav-btn i{width:14px;height:14px}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  :root{--sidebar-width:64px}
+  .logo-text,.nav-item>span,.sidebar-user .user-info,.sidebar-user .logout-btn,.nav-section-label,.nav-badge{display:none}
+  .nav-item{justify-content:center;padding:var(--space-3)}
+  .logo-icon{margin:0 auto}
+  .sidebar-logo{justify-content:center;padding:var(--space-5) var(--space-4)}
+  .sidebar-user{justify-content:center;padding:var(--space-4)}
+  .grid-3-1,.grid-2{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  :root{--sidebar-width:0px;--header-height:56px}
+  .sidebar{display:none}
+  .main{margin-left:0}
+  .content{padding:var(--space-4)}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .week-summary{grid-template-columns:1fr 1fr}
+  .patients-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== AUTH OVERLAY ===================== -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div>
+        <div class="auth-logo-name">DYAS</div>
+        <div class="auth-logo-sub">Clínica San Ángel · Portal Médico</div>
+      </div>
+    </div>
+
+    <!-- Login Panel -->
+    <div id="panel-login">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="setLoginRole('doctor')">🩺 Médico</div>
+        <div class="auth-tab" onclick="setLoginRole('patient')">👤 Paciente</div>
+      </div>
+      <div class="auth-title">Iniciar sesión</div>
+      <div class="auth-sub">Accede a tu portal personalizado</div>
+      <div id="login-error" class="auth-error">Correo o contraseña incorrectos.</div>
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input class="form-input" type="email" id="login-email" placeholder="tu@correo.com" value="doctor@dyas.mx">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" type="password" id="login-pass" placeholder="••••••••" value="Doctor123">
+      </div>
+      <button class="btn-primary" onclick="doLogin()" style="margin-top:var(--space-2)">Entrar</button>
+      <div class="auth-demo">
+        <strong>Demo:</strong> doctor@dyas.mx / Doctor123 &nbsp;|&nbsp; paciente@dyas.mx / Paciente123
+      </div>
+      <div class="auth-switch">¿No tienes cuenta? <a onclick="showPanel('panel-register')">Regístrate</a></div>
+    </div>
+
+    <!-- Register Panel -->
+    <div id="panel-register" style="display:none">
+      <div class="auth-title">Crear cuenta</div>
+      <div class="auth-sub">Únete a la plataforma DYAS</div>
+      <div id="reg-error" class="auth-error"></div>
+      <div class="form-group">
+        <label class="form-label">Nombre completo</label>
+        <input class="form-input" type="text" id="reg-name" placeholder="Dr. Juan Pérez">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input class="form-input" type="email" id="reg-email" placeholder="tu@correo.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Rol</label>
+        <select class="form-input" id="reg-role">
+          <option value="doctor">Médico</option>
+          <option value="patient">Paciente</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="doRegister()" style="margin-top:var(--space-2)">Crear cuenta</button>
+      <div class="auth-switch">¿Ya tienes cuenta? <a onclick="showPanel('panel-login')">Inicia sesión</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP ===================== -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div class="logo-text">
+        <div class="logo-name">DYAS</div>
+        <div class="logo-sub">Portal Médico</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Principal</div>
+      <div class="nav-item active" onclick="navigate('inicio')">
+        <i data-lucide="home"></i><span>Inicio</span>
+      </div>
+      <div class="nav-item" onclick="navigate('agenda')">
+        <i data-lucide="calendar-days"></i><span>Mi Agenda</span>
+        <span class="nav-badge" id="pending-badge">3</span>
+      </div>
+      <div class="nav-section-label">Gestión</div>
+      <div class="nav-item" onclick="navigate('pacientes')">
+        <i data-lucide="users"></i><span>Pacientes</span>
+      </div>
+      <div class="nav-item" onclick="navigate('portal-paciente')">
+        <i data-lucide="user-round"></i><span>Portal Paciente</span>
+      </div>
+      <div class="nav-section-label">Sistema</div>
+      <div class="nav-item" onclick="navigate('configuracion')">
+        <i data-lucide="settings"></i><span>Configuración</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebar-avatar">DM</div>
+      <div class="user-info">
+        <div class="user-name" id="sidebar-name">Dra. González</div>
+        <div class="user-role" id="sidebar-role">Cardiología</div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()" title="Cerrar sesión">
+        <i data-lucide="log-out" style="width:16px;height:16px"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div>
+          <div class="page-title" id="topbar-title">Inicio</div>
+          <div class="page-subtitle" id="topbar-sub">miércoles, 6 de mayo de 2026 · 6:02 p.m.</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="progress-section" id="topbar-progress">
+          <span>Progreso del día</span>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:33%"></div></div>
+          <span style="font-weight:700;color:var(--color-text)">4/12</span>
+        </div>
+        <button class="topbar-btn badge-dot" title="Notificaciones">
+          <i data-lucide="bell"></i>
+        </button>
+        <button class="topbar-btn" data-theme-toggle title="Cambiar tema">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn btn-blue btn-sm" onclick="openModal('modal-nueva-cita')">
+          <i data-lucide="plus"></i>+ Nueva Cita
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ============= INICIO ============= -->
+      <div class="view active" id="view-inicio">
+        <!-- Welcome banner -->
+        <div class="welcome-banner">
+          <div>
+            <div class="welcome-title" id="welcome-greeting">Bienvenida, Dra. González</div>
+            <div class="welcome-sub">
+              <i data-lucide="calendar"></i>
+              <span id="welcome-date">miércoles, 6 de mayo de 2026 · 6:02 p.m.</span>
+            </div>
+          </div>
+          <div class="welcome-progress">
+            <div class="welcome-progress-label">Progreso del Día</div>
+            <div class="welcome-progress-val">4/12</div>
+            <div style="margin-top:8px;width:140px;height:6px;background:rgba(255,255,255,.25);border-radius:9999px;overflow:hidden">
+              <div style="height:100%;width:33%;background:#fff;border-radius:9999px"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-label">Pacientes Hoy</div>
+              <div class="stat-icon blue"><i data-lucide="users"></i></div>
+            </div>
+            <div class="stat-value">12</div>
+            <div class="stat-sub up"><i data-lucide="trending-up" style="width:12px;height:12px"></i>+2 vs ayer</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-label">Citas Pendientes</div>
+              <div class="stat-icon yellow"><i data-lucide="clock"></i></div>
+            </div>
+            <div class="stat-value">3</div>
+            <div class="stat-sub">Requieren confirmación</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-label">Canceladas Hoy</div>
+              <div class="stat-icon red"><i data-lucide="x-circle"></i></div>
+            </div>
+            <div class="stat-value">2</div>
+            <div class="stat-sub down"><i data-lucide="alert-circle" style="width:12px;height:12px"></i>12% del total</div>
+          </div>
+        </div>
+
+        <!-- Agenda + Acciones -->
+        <div class="grid-3-1">
+          <!-- Agenda -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title"><i data-lucide="calendar-days"></i>Agenda de Hoy</div>
+                <div class="card-subtitle">5 citas programadas</div>
+              </div>
+              <button class="btn btn-blue btn-sm" onclick="openModal('modal-nueva-cita')">
+                <i data-lucide="plus"></i>Nueva Cita
+              </button>
+            </div>
+            <div id="agenda-home-list">
+              <!-- rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Sidebar derecho -->
+          <div style="display:flex;flex-direction:column;gap:var(--space-5)">
+            <!-- Acciones rápidas -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><i data-lucide="zap"></i>Acciones Rápidas</div>
+              </div>
+              <div class="quick-actions">
+                <button class="quick-btn primary" onclick="openModal('modal-nueva-cita')">
+                  <i data-lucide="calendar-plus"></i>Nueva Cita
+                </button>
+                <button class="quick-btn outline" onclick="navigate('pacientes')">
+                  <i data-lucide="search"></i>Buscar Paciente
+                </button>
+                <button class="quick-btn outline" onclick="navigate('agenda')">
+                  <i data-lucide="calendar-range"></i>Ver Agenda Semanal
+                </button>
+              </div>
+            </div>
+            <!-- Alertas -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title" style="color:var(--color-warning)"><i data-lucide="alert-triangle"></i>Alertas</div>
+              </div>
+              <div class="alerts-section">
+                <div class="alert-item warning">
+                  <i data-lucide="clock"></i>
+                  <div class="alert-item-text">
+                    <strong>3 citas sin confirmar</strong>
+                    Requieren llamada de confirmación
+                  </div>
+                </div>
+                <div class="alert-item info">
+                  <i data-lucide="file-text"></i>
+                  <div class="alert-item-text">
+                    <strong>2 expedientes incompletos</strong>
+                    Pendientes de actualizar
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen semana -->
+        <div class="card" style="margin-top:var(--space-5)">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="bar-chart-2"></i>Resumen de la Semana</div>
+          </div>
+          <div class="week-summary">
+            <div class="week-stat blue">
+              <div class="week-stat-val">48</div>
+              <div class="week-stat-label">Total Semanal</div>
+            </div>
+            <div class="week-stat green">
+              <div class="week-stat-val">42</div>
+              <div class="week-stat-label">Confirmadas</div>
+            </div>
+            <div class="week-stat yellow">
+              <div class="week-stat-val">4</div>
+              <div class="week-stat-label">Pendientes</div>
+            </div>
+            <div class="week-stat red">
+              <div class="week-stat-val">2</div>
+              <div class="week-stat-label">Canceladas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= AGENDA ============= -->
+      <div class="view" id="view-agenda">
+        <div class="page-header">
+          <div>
+            <div class="page-heading">Mi Agenda</div>
+            <div class="page-heading-sub"><i data-lucide="calendar"></i>Gestiona tus citas y horarios</div>
+          </div>
+          <button class="btn btn-blue" onclick="openModal('modal-nueva-cita')">
+            <i data-lucide="plus"></i>+ Nueva Cita
+          </button>
+        </div>
+        <div class="grid-3-1">
+          <!-- Calendario -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="calendar"></i>Calendario</div>
+            </div>
+            <div class="mini-cal">
+              <div class="cal-header">
+                <button class="cal-nav" onclick="calNav(-1)"><i data-lucide="chevron-left"></i></button>
+                <div class="cal-month" id="cal-month-label">Mayo 2026</div>
+                <button class="cal-nav" onclick="calNav(1)"><i data-lucide="chevron-right"></i></button>
+              </div>
+              <div class="cal-grid" id="cal-grid"></div>
+              <div class="cal-selected-date">
+                Fecha seleccionada:
+                <strong id="cal-selected-label">sábado, 9 de mayo de 2026</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Agenda del día -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title" style="font-size:var(--text-base)"><i data-lucide="list-checks"></i>Agenda del Día</div>
+                <div class="card-subtitle" id="agenda-day-count">4 citas programadas</div>
+              </div>
+              <div class="agenda-day-nav">
+                <button class="topbar-btn"><i data-lucide="chevron-left"></i></button>
+                <button class="topbar-btn"><i data-lucide="chevron-right"></i></button>
+              </div>
+            </div>
+            <div id="agenda-day-list"></div>
+          </div>
+        </div>
+        <!-- Week stats -->
+        <div class="card" style="margin-top:var(--space-5)">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="calendar-range"></i>Resumen Semanal</div>
+          </div>
+          <div class="week-summary">
+            <div class="week-stat blue"><div class="week-stat-val">48</div><div class="week-stat-label">Total</div></div>
+            <div class="week-stat green"><div class="week-stat-val">42</div><div class="week-stat-label">Confirmadas</div></div>
+            <div class="week-stat yellow"><div class="week-stat-val">4</div><div class="week-stat-label">Pendientes</div></div>
+            <div class="week-stat red"><div class="week-stat-val">2</div><div class="week-stat-label">Canceladas</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= PACIENTES ============= -->
+      <div class="view" id="view-pacientes">
+        <div class="page-header">
+          <div>
+            <div class="page-heading">Mis Pacientes</div>
+            <div class="page-heading-sub"><i data-lucide="users"></i>Administra expedientes médicos digitales</div>
+          </div>
+          <button class="btn btn-blue" onclick="openModal('modal-nuevo-paciente')">
+            <i data-lucide="user-plus"></i>+ Nuevo Paciente
+          </button>
+        </div>
+        <!-- Stats -->
+        <div class="stats-grid" style="margin-bottom:var(--space-5)">
+          <div class="stat-card">
+            <div class="stat-card-top"><div class="stat-label">Total Pacientes</div><div class="stat-icon blue"><i data-lucide="users"></i></div></div>
+            <div class="stat-value">4</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><div class="stat-label">Activos</div><div class="stat-icon green"><i data-lucide="activity"></i></div></div>
+            <div class="stat-value">148</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><div class="stat-label">Nuevos (mes)</div><div class="stat-icon yellow"><i data-lucide="user-plus"></i></div></div>
+            <div class="stat-value">12</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top"><div class="stat-label">Citas Hoy</div><div class="stat-icon red"><i data-lucide="calendar"></i></div></div>
+            <div class="stat-value">8</div>
+          </div>
+        </div>
+        <!-- Search + List -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i data-lucide="list"></i>Lista de Pacientes <span class="badge badge-blue" style="margin-left:8px">4 encontrados</span></div>
+            <div class="search-bar">
+              <i data-lucide="search"></i>
+              <input type="text" placeholder="Buscar por nombre..." oninput="filterPatients(this.value)">
+            </div>
+          </div>
+          <div id="patients-list"></div>
+        </div>
+      </div>
+
+      <!-- ============= PORTAL PACIENTE ============= -->
+      <div class="view" id="view-portal-paciente">
+        <div class="page-header">
+          <div>
+            <div class="page-heading">Portal del Paciente</div>
+            <div class="page-heading-sub"><i data-lucide="user-round"></i>Vista del paciente</div>
+          </div>
+        </div>
+        <div class="portal-selector">
+          <div class="portal-btn active" onclick="setPortalTab('historial')">
+            <i data-lucide="file-text" style="width:40px;height:40px;margin:0 auto 12px"></i>
+            <div class="portal-btn-title">Historial Médico</div>
+            <div class="portal-btn-desc">Consulta el historial de visitas y diagnósticos</div>
+          </div>
+          <div class="portal-btn" onclick="setPortalTab('agendar')">
+            <i data-lucide="calendar-plus" style="width:40px;height:40px;margin:0 auto 12px"></i>
+            <div class="portal-btn-title">Agendar Cita</div>
+            <div class="portal-btn-desc">Programa una nueva consulta médica</div>
+          </div>
+        </div>
+        <!-- Historial -->
+        <div id="portal-historial">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="clock"></i>Últimas Visitas</div>
+            </div>
+            <div id="historial-list"></div>
+          </div>
+        </div>
+        <!-- Agendar -->
+        <div id="portal-agendar" style="display:none">
+          <div class="card" style="max-width:540px">
+            <div class="card-header">
+              <div class="card-title"><i data-lucide="calendar-plus"></i>Nueva Cita</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Paciente</label>
+              <input class="form-input" type="text" placeholder="Nombre del paciente">
+            </div>
+            <div class="modal-form-row" style="margin-bottom:var(--space-4)">
+              <div class="form-group">
+                <label class="form-label">Fecha</label>
+                <input class="form-input" type="date" value="2026-05-09">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Hora</label>
+                <select class="form-input">
+                  <option>09:00 AM</option><option>09:30 AM</option><option>10:00 AM</option>
+                  <option>10:30 AM</option><option>11:00 AM</option><option>11:30 AM</option>
+                  <option>02:00 PM</option><option>02:30 PM</option><option>03:00 PM</option>
+                  <option>03:30 PM</option><option>04:00 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tipo de consulta</label>
+              <select class="form-input">
+                <option>Consulta General</option><option>Primera Cita</option>
+                <option>Control Cardiológico</option><option>Seguimiento</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Notas</label>
+              <textarea class="form-input" rows="3" placeholder="Síntomas o notas adicionales..."></textarea>
+            </div>
+            <button class="btn-primary">Confirmar Cita</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= CONFIG ============= -->
+      <div class="view" id="view-configuracion">
+        <div class="page-header">
+          <div>
+            <div class="page-heading">Configuración</div>
+            <div class="page-heading-sub"><i data-lucide="settings"></i>Preferencias del sistema</div>
+          </div>
+        </div>
+        <div class="grid-2" style="max-width:900px">
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i data-lucide="user"></i>Mi Perfil</div></div>
+            <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" type="text" value="Dra. María González"></div>
+            <div class="form-group"><label class="form-label">Especialidad</label><input class="form-input" type="text" value="Cardiología"></div>
+            <div class="form-group"><label class="form-label">Correo</label><input class="form-input" type="email" value="doctor@dyas.mx"></div>
+            <button class="btn btn-blue" style="margin-top:var(--space-2)"><i data-lucide="save"></i>Guardar cambios</button>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title"><i data-lucide="palette"></i>Apariencia</div></div>
+            <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--space-4)">Elige el tema visual de la aplicación</p>
+            <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+              <button class="quick-btn outline" onclick="setTheme('light')"><i data-lucide="sun"></i>Modo Claro</button>
+              <button class="quick-btn outline" onclick="setTheme('dark')"><i data-lucide="moon"></i>Modo Oscuro</button>
+              <button class="quick-btn outline" onclick="setThemeAuto()"><i data-lucide="monitor"></i>Según el sistema</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div>
+
+<!-- ===== MODALS ===== -->
+<!-- Nueva Cita -->
+<div class="modal-overlay" id="modal-nueva-cita" onclick="closeModalOutside(event,this)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Nueva Cita</div>
+      <button class="modal-close" onclick="closeModal('modal-nueva-cita')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="form-group"><label class="form-label">Paciente</label><input class="form-input" type="text" placeholder="Nombre del paciente"></div>
+    <div class="modal-form-row" style="margin-bottom:var(--space-4)">
+      <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" type="date" value="2026-05-09"></div>
+      <div class="form-group"><label class="form-label">Hora</label><select class="form-input"><option>09:00 AM</option><option>10:30 AM</option><option>11:00 AM</option><option>02:00 PM</option><option>03:30 PM</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Tipo de consulta</label><select class="form-input"><option>Consulta General</option><option>Primera Cita</option><option>Control Cardiológico</option><option>Seguimiento</option></select></div>
+    <div class="form-group"><label class="form-label">Consultorio</label><select class="form-input"><option>Consultorio 1</option><option>Consultorio 2</option><option>Consultorio 3</option></select></div>
+    <button class="btn-primary" onclick="closeModal('modal-nueva-cita')">Guardar Cita</button>
+  </div>
+</div>
+<!-- Nuevo Paciente -->
+<div class="modal-overlay" id="modal-nuevo-paciente" onclick="closeModalOutside(event,this)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Nuevo Paciente</div>
+      <button class="modal-close" onclick="closeModal('modal-nuevo-paciente')"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-form-row" style="margin-bottom:var(--space-4)">
+      <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" type="text" placeholder="Nombre"></div>
+      <div class="form-group"><label class="form-label">Apellidos</label><input class="form-input" type="text" placeholder="Apellidos"></div>
+    </div>
+    <div class="modal-form-row" style="margin-bottom:var(--space-4)">
+      <div class="form-group"><label class="form-label">Edad</label><input class="form-input" type="number" placeholder="Años"></div>
+      <div class="form-group"><label class="form-label">Sexo</label><select class="form-input"><option>Femenino</option><option>Masculino</option></select></div>
+    </div>
+    <div class="modal-form-row" style="margin-bottom:var(--space-4)">
+      <div class="form-group"><label class="form-label">Tipo de sangre</label><select class="form-input"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div>
+      <div class="form-group"><label class="form-label">Correo</label><input class="form-input" type="email" placeholder="correo@mail.com"></div>
+    </div>
+    <button class="btn-primary" onclick="closeModal('modal-nuevo-paciente')">Registrar Paciente</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const USERS = [
+  {email:'doctor@dyas.mx',pass:'Doctor123',role:'doctor',name:'Dra. María González',specialty:'Cardiología'},
+  {email:'paciente@dyas.mx',pass:'Paciente123',role:'patient',name:'Ana Martínez García',specialty:'Paciente'},
+];
+let customUsers = [];
+let currentUser = null;
+let loginRole = 'doctor';
+let currentView = 'inicio';
+
+const APPOINTMENTS = [
+  {time:'09:00',period:'AM',patient:'Ana Martínez',type:'Consulta General',room:'Consultorio 1',status:'confirmed'},
+  {time:'10:30',period:'AM',patient:'Carlos Rodríguez',type:'Control Cardiológico',room:'Consultorio 1',status:'confirmed'},
+  {time:'11:00',period:'AM',patient:'Laura Sánchez',type:'Primera Cita',room:'Consultorio 1',status:'pending'},
+  {time:'02:00',period:'PM',patient:'Miguel Torres',type:'Seguimiento',room:'Consultorio 1',status:'confirmed'},
+  {time:'03:30',period:'PM',patient:'Patricia Gómez',type:'Consulta General',room:'Consultorio 1',status:'confirmed'},
+];
+
+const PATIENTS = [
+  {name:'Ana Martínez García',age:34,gender:'Femenino',blood:'O+',lastVisit:'15 Abr 2026',conditions:2,initials:'AM',color:'#2563eb'},
+  {name:'Carlos Rodríguez López',age:45,gender:'Masculino',blood:'A+',lastVisit:'20 Abr 2026',conditions:1,initials:'CR',color:'#0ea5e9'},
+  {name:'Laura Sánchez Pérez',age:28,gender:'Femenino',blood:'B+',lastVisit:'22 Abr 2026',conditions:0,initials:'LS',color:'#8b5cf6'},
+  {name:'Miguel Torres Hernández',age:52,gender:'Masculino',blood:'O-',lastVisit:'25 Abr 2026',conditions:1,initials:'MT',color:'#059669'},
+];
+
+const HISTORIAL = [
+  {date:'20 Abr 2026',type:'Control Cardiológico',diagnosis:'Hipertensión controlada',doctor:'Dra. González'},
+  {date:'05 Mar 2026',type:'Consulta General',diagnosis:'Revisión anual sin novedades',doctor:'Dra. González'},
+  {date:'15 Ene 2026',type:'Primera Cita',diagnosis:'Evaluación inicial – Cardiología',doctor:'Dra. González'},
+];
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+function setLoginRole(r){
+  loginRole=r;
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',i===(r==='doctor'?0:1)));
+}
+function showPanel(id){
+  document.getElementById('panel-login').style.display=id==='panel-login'?'':'none';
+  document.getElementById('panel-register').style.display=id==='panel-register'?'':'none';
+}
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim().toLowerCase();
+  const pass=document.getElementById('login-pass').value;
+  const all=[...USERS,...customUsers];
+  const u=all.find(u=>u.email.toLowerCase()===email&&u.pass===pass);
+  if(!u){document.getElementById('login-error').style.display='block';return;}
+  document.getElementById('login-error').style.display='none';
+  currentUser=u;
+  startApp();
+}
+function doRegister(){
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim().toLowerCase();
+  const pass=document.getElementById('reg-pass').value;
+  const role=document.getElementById('reg-role').value;
+  const errEl=document.getElementById('reg-error');
+  if(!name||!email||!pass){errEl.textContent='Completa todos los campos.';errEl.style.display='block';return;}
+  if(pass.length<6){errEl.textContent='La contraseña debe tener al menos 6 caracteres.';errEl.style.display='block';return;}
+  const all=[...USERS,...customUsers];
+  if(all.find(u=>u.email.toLowerCase()===email)){errEl.textContent='Este correo ya está registrado.';errEl.style.display='block';return;}
+  const specialty=role==='doctor'?'Cardiología':'Paciente';
+  const newU={email,pass,role,name,specialty};
+  customUsers.push(newU);
+  currentUser=newU;
+  startApp();
+}
+function startApp(){
+  document.getElementById('auth-overlay').style.display='none';
+  document.getElementById('app').classList.add('visible');
+  // update UI with user info
+  const av=currentUser.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  document.getElementById('sidebar-avatar').textContent=av;
+  document.getElementById('sidebar-name').textContent=currentUser.name;
+  document.getElementById('sidebar-role').textContent=currentUser.specialty;
+  document.getElementById('welcome-greeting').textContent='Bienvenid'+(currentUser.name.includes('Dra')?'a':'o')+', '+currentUser.name.split(' ')[0]+' '+currentUser.name.split(' ')[1];
+  renderAll();
+  lucide.createIcons();
+  initCalendar();
+  updateDateTime();
+  setInterval(updateDateTime,60000);
+}
+function doLogout(){
+  currentUser=null;
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('auth-overlay').style.display='flex';
+  lucide.createIcons();
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+const VIEW_TITLES={
+  'inicio':['Inicio','Portal Médico · Clínica San Ángel'],
+  'agenda':['Mi Agenda','Gestiona tus citas y horarios'],
+  'pacientes':['Mis Pacientes','Administra expedientes médicos digitales'],
+  'portal-paciente':['Portal del Paciente','Vista del paciente'],
+  'configuracion':['Configuración','Preferencias del sistema'],
+};
+function navigate(v){
+  currentView=v;
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  event&&event.currentTarget&&event.currentTarget.classList.add('active');
+  // find matching nav item
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    const onclick=el.getAttribute('onclick')||'';
+    if(onclick.includes("'"+v+"'"))el.classList.add('active');
+  });
+  const [title,sub]=VIEW_TITLES[v]||[v,''];
+  document.getElementById('topbar-title').textContent=title;
+  document.getElementById('topbar-sub').textContent=sub;
+  document.getElementById('topbar-progress').style.display=v==='inicio'?'flex':'none';
+  lucide.createIcons();
+}
+
+/* ============================================================
+   RENDER APPOINTMENTS
+   ============================================================ */
+function renderAppointmentItem(a,small=false){
+  const badgeClass=a.status==='confirmed'?'badge-confirmed':a.status==='pending'?'badge-pending':'badge-cancelled';
+  const badgeLabel=a.status==='confirmed'?'Confirmada':a.status==='pending'?'Pendiente':'Cancelada';
+  if(small){
+    return `<div class="agenda-item">
+      <div class="agenda-time-block">${a.time}<span>${a.period}</span></div>
+      <div class="agenda-info">
+        <div class="agenda-patient"><i data-lucide="user"></i>${a.patient}</div>
+        <div class="agenda-type"><i data-lucide="map-pin"></i>${a.type} · ${a.room}</div>
+      </div>
+      <div class="agenda-actions">
+        <span class="badge ${badgeClass}">${badgeLabel}</span>
+        <button class="btn btn-outline btn-sm">Ver</button>
+      </div>
+    </div>`;
+  }
+  return `<div class="agenda-item">
+    <div class="agenda-time-block">${a.time}<span>${a.period}</span></div>
+    <div class="agenda-info">
+      <div class="agenda-patient"><i data-lucide="user"></i>${a.patient}</div>
+      <div class="agenda-type"><i data-lucide="map-pin"></i>${a.room} · <i data-lucide="stethoscope"></i>${a.type}</div>
+    </div>
+    <div class="agenda-actions">
+      <span class="badge ${badgeClass}">${badgeLabel}</span>
+      <button class="icon-btn"><i data-lucide="pencil"></i></button>
+      <button class="icon-btn danger"><i data-lucide="trash-2"></i></button>
+    </div>
+  </div>`;
+}
+function renderAll(){
+  // Home agenda (small)
+  document.getElementById('agenda-home-list').innerHTML=APPOINTMENTS.map(a=>renderAppointmentItem(a,true)).join('');
+  // Agenda view
+  document.getElementById('agenda-day-list').innerHTML=APPOINTMENTS.map(a=>renderAppointmentItem(a,false)).join('');
+  document.getElementById('agenda-day-count').textContent=APPOINTMENTS.length+' citas programadas';
+  // Patients
+  renderPatients(PATIENTS);
+  // Historial
+  document.getElementById('historial-list').innerHTML=HISTORIAL.map(h=>`
+    <div class="agenda-item">
+      <div class="agenda-time-block" style="background:var(--color-surface-offset);color:var(--color-text-muted);font-size:.6rem;text-align:center;line-height:1.3">${h.date}</div>
+      <div class="agenda-info">
+        <div class="agenda-patient" style="font-size:var(--text-xs)">${h.type}</div>
+        <div class="agenda-type">${h.diagnosis}</div>
+      </div>
+      <div class="agenda-actions">
+        <span class="badge badge-blue">${h.doctor}</span>
+        <button class="icon-btn"><i data-lucide="eye"></i></button>
+      </div>
+    </div>`).join('');
+}
+function renderPatients(list){
+  document.getElementById('patients-list').innerHTML=list.length?`<div style="display:flex;flex-direction:column;gap:2px">
+    ${list.map(p=>`<div class="agenda-item" style="cursor:pointer" onclick="">
+      <div class="user-avatar" style="background:${p.color};width:44px;height:44px;border-radius:50%;font-size:var(--text-sm)">${p.initials}</div>
+      <div class="agenda-info">
+        <div class="agenda-patient" style="font-size:var(--text-sm)">${p.name}</div>
+        <div class="agenda-type">${p.age} años · ${p.gender} · Tipo de Sangre: ${p.blood}</div>
+      </div>
+      <div class="agenda-actions">
+        <div style="text-align:right">
+          <div style="font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:4px">Última visita<br><strong style="color:var(--color-text)">${p.lastVisit}</strong></div>
+          ${p.conditions>0?`<span class="badge badge-pending">${p.conditions} condiciones</span>`:''}
+        </div>
+        <button class="icon-btn"><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>`).join('')}
+  </div>`:`<div class="empty-state"><div class="empty-icon"><i data-lucide="users"></i></div><div class="empty-title">No se encontraron pacientes</div><div class="empty-desc">Intenta con otro nombre o agrega un nuevo paciente.</div></div>`;
+}
+function filterPatients(q){
+  const filtered=PATIENTS.filter(p=>p.name.toLowerCase().includes(q.toLowerCase()));
+  renderPatients(filtered);
+  lucide.createIcons();
+}
+
+/* ============================================================
+   CALENDAR
+   ============================================================ */
+let calYear=2026,calMonth=4,calSelected=9;
+const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS=['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+const LONG_DAYS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const LONG_MONTHS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const EVENT_DAYS=[6,9,11,14,20,22];
+function initCalendar(){renderCalendar()}
+function calNav(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}renderCalendar()}
+function renderCalendar(){
+  document.getElementById('cal-month-label').textContent=MONTHS[calMonth]+' '+calYear;
+  const first=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const prevDays=new Date(calYear,calMonth,0).getDate();
+  let html='';
+  DAYS.forEach(d=>html+=`<div class="cal-day-label">${d}</div>`);
+  for(let i=0;i<first;i++){
+    const d=prevDays-first+1+i;
+    html+=`<div class="cal-day other-month">${d}</div>`;
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=calYear===2026&&calMonth===4&&d===6;
+    const isSelected=d===calSelected&&calYear===2026&&calMonth===4;
+    const hasEv=EVENT_DAYS.includes(d);
+    let cls='cal-day';
+    if(isToday)cls+=' today';
+    else if(isSelected)cls+=' selected';
+    if(hasEv)cls+=' has-events';
+    html+=`<div class="${cls}" onclick="selectDay(${d})">${d}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML=html;
+  updateSelectedLabel();
+}
+function selectDay(d){
+  calSelected=d;
+  renderCalendar();
+}
+function updateSelectedLabel(){
+  const date=new Date(calYear,calMonth,calSelected);
+  const label=LONG_DAYS[date.getDay()]+', '+calSelected+' de '+LONG_MONTHS[calMonth]+' de '+calYear;
+  const el=document.getElementById('cal-selected-label');
+  if(el)el.textContent=label.charAt(0).toUpperCase()+label.slice(1);
+}
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);lucide.createIcons()}
+function setThemeAuto(){const d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';setTheme(d)}
+document.addEventListener('DOMContentLoaded',()=>{
+  const t=document.querySelector('[data-theme-toggle]');
+  if(t)t.addEventListener('click',()=>{
+    const cur=document.documentElement.getAttribute('data-theme');
+    setTheme(cur==='dark'?'light':'dark');
+  });
+  lucide.createIcons();
+});
+
+/* ============================================================
+   DATETIME
+   ============================================================ */
+function updateDateTime(){
+  const now=new Date();
+  const days=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const months=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  let h=now.getHours(),m=now.getMinutes();
+  const ampm=h>=12?'p.m.':'a.m.';
+  h=h%12||12;
+  const str=days[now.getDay()]+', '+now.getDate()+' de '+months[now.getMonth()]+' de '+now.getFullYear()+' · '+h+':'+(m<10?'0'+m:m)+' '+ampm;
+  const cap=str.charAt(0).toUpperCase()+str.slice(1);
+  document.getElementById('topbar-sub').textContent=cap;
+  const wd=document.getElementById('welcome-date');
+  if(wd)wd.textContent=cap;
+}
+
+/* ============================================================
+   PORTAL TABS
+   ============================================================ */
+function setPortalTab(t){
+  document.getElementById('portal-historial').style.display=t==='historial'?'':'none';
+  document.getElementById('portal-agendar').style.display=t==='agendar'?'':'none';
+  document.querySelectorAll('.portal-btn').forEach((b,i)=>b.classList.toggle('active',i===(t==='historial'?0:1)));
+  lucide.createIcons();
+}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function closeModalOutside(e,el){if(e.target===el)el.classList.remove('open')}
+</script>
+</body>
+</html>

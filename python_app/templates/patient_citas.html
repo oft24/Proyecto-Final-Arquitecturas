@@ -1,0 +1,38 @@
+{% extends "patient_base.html" %}
+{% block content %}
+<div class="p-head-row">
+  <div>
+    <h1>Mis Citas</h1>
+    <p>Historial completo y proximas citas medicas</p>
+  </div>
+  <button class="btn-green">Agendar Nueva Cita</button>
+</div>
+
+<div class="p-stats">
+  <div class="panel stat-blue"><h4>Total de Citas</h4><h2>6</h2></div>
+  <div class="panel stat-green"><h4>Proximas</h4><h2>2</h2></div>
+  <div class="panel stat-purple"><h4>Completadas</h4><h2>3</h2></div>
+  <div class="panel stat-red"><h4>Canceladas</h4><h2>1</h2></div>
+</div>
+
+<section class="panel">
+  <div class="panel-title green">Gestion de Citas</div>
+  {% for a in appointments %}
+  <div class="appointment-card-green">
+    <div>
+      <h3>{{ a.doctor }}</h3>
+      <p>{{ a.specialty }}</p>
+      <p>{{ a.date }} · {{ a.time }}</p>
+      <p>{{ a.location }}</p>
+      <p>{{ a.type }}</p>
+    </div>
+    <div class="p-next-actions">
+      <p style="font-weight:700;color:#16a34a">{{ a.cost }}</p>
+      <button class="btn-green-soft">Ver Detalles</button>
+      <button class="btn-light">Reagendar</button>
+      <button class="btn-red-light">Cancelar</button>
+    </div>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

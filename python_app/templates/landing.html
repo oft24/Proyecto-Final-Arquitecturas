@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediSync</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="landing-wrap">
+    <div class="landing">
+      <div class="landing-top">
+        <div class="landing-brand">
+          <i class="fa-regular fa-heart"></i>
+          <h1><span style="color:#1d4ed8">Medi</span><span style="color:#059669">Sync</span></h1>
+        </div>
+        <p>Sistema de Gestion de Citas Medicas</p>
+      </div>
+
+      <div class="landing-cards">
+        <div class="landing-card doctor">
+          <div class="head">
+            <h2>Portal Medico</h2>
+            <p>Para profesionales de la salud</p>
+          </div>
+          <div class="body">
+            <ul class="landing-list">
+              <li>Gestiona tu agenda de citas</li>
+              <li>Administra expedientes de pacientes</li>
+              <li>Visualiza tu dia en tiempo real</li>
+            </ul>
+            <a href="{{ url_for('doctor_home') }}"><button class="landing-btn">Acceder como Medico</button></a>
+          </div>
+        </div>
+
+        <div class="landing-card patient">
+          <div class="head">
+            <h2>Portal del Paciente</h2>
+            <p>Para consultar y agendar citas</p>
+          </div>
+          <div class="body">
+            <ul class="landing-list">
+              <li>Agenda citas 24/7 en linea</li>
+              <li>Consulta tu expediente medico</li>
+              <li>Recibe recordatorios automaticos</li>
+            </ul>
+            <a href="{{ url_for('patient_home') }}"><button class="landing-btn">Acceder como Paciente</button></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="landing-stats">
+        <div><h2 style="color:#2563eb">12</h2><p>Medicos Especialistas</p></div>
+        <div><h2 style="color:#16a34a">3</h2><p>Consultorios Disponibles</p></div>
+        <div><h2 style="color:#9333ea">24/7</h2><p>Acceso en Linea</p></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

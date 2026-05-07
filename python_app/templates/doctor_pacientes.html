@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar">
+  <div class="welcome">
+    <h1>Mis Pacientes</h1>
+    <div class="date"><i class="fa-solid fa-users"></i> Administra expedientes medicos digitales</div>
+  </div>
+  <div><button class="btn-blue"><i class="fa-solid fa-plus"></i> Nuevo Paciente</button></div>
+</div>
+
+<div class="stats">
+  <div class="stat-card bg-blue"><h4>Total Pacientes</h4><h2>4</h2></div>
+  <div class="stat-card" style="background:#dcfce7"><h4>Activos</h4><h2>148</h2></div>
+  <div class="stat-card" style="background:#f5f3ff"><h4>Nuevos (mes)</h4><h2>12</h2></div>
+</div>
+
+<section class="card">
+  <div class="card-header"><h3>Lista de Pacientes</h3><span>4 pacientes encontrados</span></div>
+  <div class="card-body table-like">
+    {% for p in patients %}
+    <div class="item">
+      <div class="item-left">
+        <div class="avatar">{{ p.initials }}</div>
+        <div>
+          <h4>{{ p.name }}</h4>
+          <p style="color:#6b7280;font-size:12px">{{ p.meta }}</p>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <p style="font-size:12px;color:#6b7280">Ultima visita<br>{{ p.last_visit }}</p>
+        {% if p.conditions > 0 %}<span class="badge">{{ p.conditions }} condiciones</span>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

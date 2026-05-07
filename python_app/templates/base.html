@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediSync Doctor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="logo">
+          <h2>MediSync</h2>
+          <p>Portal Medico</p>
+        </div>
+        <nav class="menu">
+          <a href="{{ url_for('doctor_home') }}" class="{% if active_page == 'inicio' %}active{% endif %}">
+            <i class="fa-solid fa-house"></i>Inicio
+          </a>
+          <a href="{{ url_for('doctor_agenda') }}" class="{% if active_page == 'agenda' %}active{% endif %}">
+            <i class="fa-regular fa-calendar"></i>Mi Agenda
+          </a>
+          <a href="{{ url_for('doctor_patients') }}" class="{% if active_page == 'pacientes' %}active{% endif %}">
+            <i class="fa-solid fa-users"></i>Pacientes
+          </a>
+        </nav>
+      </div>
+      <div class="sidebar-user">
+        <div class="avatar">DM</div>
+        <div>
+          <h4>Dr. Maria Gonzalez</h4>
+          <p>Cardiologia</p>
+        </div>
+      </div>
+    </aside>
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "medisync-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "setup": "node scripts/setup-all.mjs",
+    "dev": "concurrently -n CLIENT,SERVER,PYTHON -c blue,green,magenta \"npm run dev --prefix client\" \"npm run dev --prefix server\" \"python -m uvicorn app.main:app --reload --port 8001 --app-dir python_service\"",
+    "start:all": "npm run setup && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
