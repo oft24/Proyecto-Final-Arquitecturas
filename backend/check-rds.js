@@ -1,12 +1,15 @@
 import pg from 'pg';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const { Client } = pg;
 
+// Conectar a "postgres" (admin) usando las credenciales del DATABASE_URL
+const adminUrl = process.env.DATABASE_URL.replace(/\/[^/]+(\?|$)/, '/postgres$1');
+
 const client = new Client({
-  host: 'db-dyas.crepubhj4fys.us-east-1.rds.amazonaws.com',
-  port: 5432,
-  user: 'postgres',
-  password: 'admin123!',
-  database: 'postgres'
+  connectionString: adminUrl,
+  ssl: { rejectUnauthorized: false }
 });
 
 async function run() {

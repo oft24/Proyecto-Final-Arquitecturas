@@ -1,14 +1,15 @@
 import pg from "pg";
+import dotenv from "dotenv";
+dotenv.config();
 
 const { Client } = pg;
 
 // Conectar a la base de datos por defecto "postgres" para crear "medisync"
+// Reemplaza el nombre de la BD en la URL por "postgres"
+const adminUrl = process.env.DATABASE_URL.replace(/\/[^/]+(\?|$)/, '/postgres$1');
+
 const client = new Client({
-  host: "db-dyas.crepubhj4fys.us-east-1.rds.amazonaws.com",
-  port: 5432,
-  user: "postgres",
-  password: "admin123!",
-  database: "postgres", // conectar a postgres primero
+  connectionString: adminUrl,
   ssl: { rejectUnauthorized: false },
 });
 

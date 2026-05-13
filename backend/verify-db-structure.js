@@ -1,15 +1,14 @@
 import pg from 'pg';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const { Client } = pg;
 
+const adminUrl = process.env.DATABASE_URL.replace(/\/[^/]+(\?|$)/, '/postgres$1');
+
 const client = new Client({
-  host: 'db-dyas.crepubhj4fys.us-east-1.rds.amazonaws.com',
-  port: 5432,
-  user: 'postgres',
-  password: 'MediSync2026!Secure',
-  database: 'postgres',
-  ssl: {
-    rejectUnauthorized: false
-  }
+  connectionString: adminUrl,
+  ssl: { rejectUnauthorized: false }
 });
 
 async function verifyDatabase() {
@@ -43,14 +42,8 @@ async function verifyDatabase() {
     await client.end();
     
     const medisyncClient = new Client({
-      host: 'db-dyas.crepubhj4fys.us-east-1.rds.amazonaws.com',
-      port: 5432,
-      user: 'postgres',
-      password: 'MediSync2026!Secure',
-      database: 'medisync',
-      ssl: {
-        rejectUnauthorized: false
-      }
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false }
     });
 
     await medisyncClient.connect();
