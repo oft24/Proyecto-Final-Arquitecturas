@@ -73,17 +73,7 @@ npm install --prefix backend
 
 Crea o edita el archivo `backend/.env`:
 
-```env
-PORT=4000
-CLIENT_URL=http://localhost:5173
-
-DATABASE_URL="postgresql://USUARIO:PASSWORD@HOST:5432/medisync?sslmode=require"
-
-JWT_ACCESS_SECRET="tu_secreto_jwt"
-JWT_REFRESH_SECRET="tu_secreto_refresh"
-
-NODE_ENV=development
-```
+Las variables no se muestran
 
 ### 4. Ejecutar migraciones de base de datos
 
