@@ -105,9 +105,9 @@ export async function getAppointments(req, res, next) {
     let citas;
 
     if (rol === "medico") {
-      // Obtener el medicoId del usuario
-      const medico = await prisma.medico.findFirst({
-        where: { usuarioId },
+      // En el JWT, para un medico, sub === medicoId (ver auth.service.js > issueTokens)
+      const medico = await prisma.medico.findUnique({
+        where: { medicoId: usuarioId },
       });
 
       if (!medico) {
