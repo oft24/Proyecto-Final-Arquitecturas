@@ -122,6 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
+    window.location.href = "/login";
   };
 
   const value = useMemo(

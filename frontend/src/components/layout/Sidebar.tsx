@@ -66,9 +66,18 @@ export function Sidebar() {
           ))}
         </nav>
       </div>
-      <button onClick={logout} className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm">
-        <LogOut className="h-4 w-4" /> Cerrar sesion
-      </button>
+      <div className="space-y-2">
+        <div className="rounded-lg bg-slate-50 px-3 py-2">
+          <p className="text-sm font-semibold text-slate-800 truncate">{user?.nombre}</p>
+          <p className="text-xs text-slate-400 capitalize">{portalLabel[user?.rol ?? "paciente"]}</p>
+        </div>
+        <button
+          onClick={logout}
+          className="flex w-full items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-100"
+        >
+          <LogOut className="h-4 w-4" /> Cerrar sesión
+        </button>
+      </div>
     </aside>
   );
 }
