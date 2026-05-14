@@ -10,6 +10,7 @@ import {
   getDoctorAppointments,
   cancelAppointment,
   markComplete,
+  updateAppointment,
 } from "../controllers/appointment.controller.js";
 import { requireAuth, requireRole } from "../middleware/auth.middleware.js";
 
@@ -64,6 +65,19 @@ router.patch(
   requireAuth,
   requireRole("medico"),
   markComplete
+);
+
+// Modificar una cita (recepcionista / director)
+router.patch(
+  "/:citaId",
+  requireAuth,
+  requireRole("recepcionista", "director"),
+  [
+    body("fechaHora").optional().isISO8601().withMessage("fechaHora debe ser ISO8601"),
+    body("medicoId").optional().isUUID().withMessage("medicoId debe ser UUID"),
+    body("motivo").optional().isLength({ min: 3 }).withMessage("motivo muy corto"),
+  ],
+  updateAppointment
 );
 
 export default router;

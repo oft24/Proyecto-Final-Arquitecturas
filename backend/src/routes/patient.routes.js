@@ -7,6 +7,7 @@ import {
   getPatientRecords,
   getPatientStats,
   getPatientDashboard,
+  getPatientAppointmentHistory,
 } from "../controllers/patient.controller.js";
 import { requireAuth, requireRole } from "../middleware/auth.middleware.js";
 
@@ -30,6 +31,9 @@ router.get("/:pacienteId", requireAuth, getPatientDetails);
 
 // Obtener citas próximas de un paciente
 router.get("/:pacienteId/appointments", requireAuth, getUpcomingAppointments);
+
+// Obtener historial completo de citas de un paciente
+router.get("/:pacienteId/history", requireAuth, getPatientAppointmentHistory);
 
 // Obtener expedientes de un paciente
 router.get("/:pacienteId/records", requireAuth, getPatientRecords);

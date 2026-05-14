@@ -7,9 +7,7 @@ import {
   getExpedientesByPaciente,
   getPacienteStats,
 } from "../services/patient.service.js";
-import { prisma } from "../config/prisma.js";
-
-/**
+import { prisma } from "../config/prisma.js";/**
  * Buscar pacientes por nombre, email, folio o teléfono
  */
 export async function searchPatients(req, res, next) {
@@ -60,6 +58,42 @@ export async function listPatients(req, res, next) {
 
     const result = await getAllPacientes(page, limit);
     res.json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Obtener historial completo de citas de un paciente (todas, pasadas y futuras)
+ */
+export async function getPatientAppointmentHistory(req, res, next) {
+  try {
+    const { pacienteId } = req.params;
+
+    const paciente = await prisma.paciente.findUnique({ where: { pacienteId } });
+    if (!paciente) return res.status(404).json({ message: "Paciente no encontrado" });
+
+    const citas = await prisma.cita.findMany({
+      where: { pacienteId },
+      include: {
+        medico: {
+          select: { nombre: true, especialidad: true, costoConsulta: true },
+        },
+      },
+      orderBy: { fechaHora: "desc" },
+    });
+
+    res.json(citas.map((c) => ({
+      citaId: c.citaId,
+      fechaHora: c.fechaHora,
+      estado: c.estado,
+      motivo: c.motivo,
+      motivoCancelacion: c.motivoCancelacion,
+      duracionMin: c.duracionMin,
+      medico: c.medico?.nombre,
+      especialidad: c.medico?.especialidad,
+      costoConsulta: c.medico?.costoConsulta,
+    })));
   } catch (error) {
     next(error);
   }

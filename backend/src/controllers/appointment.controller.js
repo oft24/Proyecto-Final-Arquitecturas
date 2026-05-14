@@ -123,13 +123,15 @@ export async function getAppointments(req, res, next) {
           medico: true,
         },
         orderBy: { fechaHora: "desc" },
-        take: 50,
+        take: 500,
       });
     }
 
     res.json(
       citas.map((c) => ({
         citaId: c.citaId,
+        pacienteId: c.paciente?.pacienteId,
+        medicoId: c.medico?.medicoId,
         paciente: c.paciente?.nombre,
         medico: c.medico?.nombre,
         especialidad: c.medico?.especialidad,
@@ -189,6 +191,76 @@ export async function markComplete(req, res, next) {
     const { citaId } = req.params;
     const cita = await completarCita(citaId);
     res.json(cita);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Modificar una cita — recepcionista/director pueden cambiar fecha, médico y/o motivo
+ */
+export async function updateAppointment(req, res, next) {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { citaId } = req.params;
+    const { fechaHora, medicoId, motivo } = req.body;
+
+    const cita = await prisma.cita.findUnique({ where: { citaId } });
+    if (!cita) return res.status(404).json({ message: "Cita no encontrada" });
+    if (cita.estado !== "programada") {
+      return res.status(400).json({ message: "Solo se pueden modificar citas programadas" });
+    }
+
+    const nuevoMedicoId = medicoId || cita.medicoId;
+    const nuevaFecha = fechaHora ? new Date(fechaHora) : cita.fechaHora;
+
+    // Verificar conflicto de horario si cambia fecha o médico
+    if (fechaHora || medicoId) {
+      const conflicto = await prisma.cita.findFirst({
+        where: {
+          citaId: { not: citaId },
+          medicoId: nuevoMedicoId,
+          fechaHora: nuevaFecha,
+          estado: { in: ["programada", "completada"] },
+        },
+      });
+      if (conflicto) {
+        return res.status(400).json({ message: "Ese horario ya está ocupado para el médico seleccionado" });
+      }
+    }
+
+    const data = {};
+    if (fechaHora) data.fechaHora = nuevaFecha;
+    if (medicoId) data.medicoId = medicoId;
+    if (motivo !== undefined) data.motivo = motivo;
+
+    const citaActualizada = await prisma.cita.update({
+      where: { citaId },
+      data,
+      include: {
+        paciente: { select: { nombre: true } },
+        medico: { select: { nombre: true, especialidad: true } },
+      },
+    });
+
+    res.json({
+      message: "Cita actualizada exitosamente",
+      cita: {
+        citaId: citaActualizada.citaId,
+        pacienteId: citaActualizada.pacienteId,
+        medicoId: citaActualizada.medicoId,
+        paciente: citaActualizada.paciente?.nombre,
+        medico: citaActualizada.medico?.nombre,
+        especialidad: citaActualizada.medico?.especialidad,
+        fecha: citaActualizada.fechaHora,
+        estado: citaActualizada.estado,
+        motivo: citaActualizada.motivo,
+      },
+    });
   } catch (error) {
     next(error);
   }

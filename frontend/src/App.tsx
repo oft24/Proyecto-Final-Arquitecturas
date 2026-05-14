@@ -16,6 +16,7 @@ import DirectorPersonalPage from "./pages/director/DirectorPersonalPage";
 import RecepcionistaDashboardPage from "./pages/recepcionista/RecepcionistaDashboardPage";
 import RecepcionistaCitasPage from "./pages/recepcionista/RecepcionistaCitasPage";
 import RecepcionistaAgendarPage from "./pages/recepcionista/RecepcionistaAgendarPage";
+import RecepcionistaPacientesPage from "./pages/recepcionista/RecepcionistaPacientesPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { RoleGuard } from "./routes/RoleGuard";
 
@@ -49,7 +50,7 @@ export default function App() {
           <Route path="/recepcionista/dashboard" element={<RecepcionistaDashboardPage />} />
           <Route path="/recepcionista/citas" element={<RecepcionistaCitasPage />} />
           <Route path="/recepcionista/agendar" element={<RecepcionistaAgendarPage />} />
-          <Route path="/recepcionista/pacientes" element={<DoctorPatientsPage />} />
+          <Route path="/recepcionista/pacientes" element={<RecepcionistaPacientesPage />} />
         </Route>
 
         {/* Rutas de paciente */}
