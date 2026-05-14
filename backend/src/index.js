@@ -39,6 +39,6 @@ app.use("/api/director", directorRoutes);
 
 app.use(errorHandler);
 
-app.listen(env.port, () => {
-  console.log(`MediSync API running on http://localhost:${env.port}`);
+app.listen(env.port, "0.0.0.0", () => {
+  console.log(`MediSync API running on http://0.0.0.0:${env.port}`);
 });
