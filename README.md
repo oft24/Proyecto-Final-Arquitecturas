@@ -8,11 +8,11 @@
 
 | Rol               | Nombre |
 |-------------------|--------|
-| Product Owner     |        |
-| Scrum Master      |        |
-| Arquitecto        |        |
-| Developer Web     |        |
-| Developer Web     |        |
+| Product Owner     | Brandon Alan Carrion Morales       |
+| Scrum Master      | Abrahm Garza        |
+| Arquitecto        | Gerardo Escamilla Cerda        |
+| Developer Web     | Carolina Monserrat        |
+| Developer Web     | Luis Antonio V       |
 
 ---
 
