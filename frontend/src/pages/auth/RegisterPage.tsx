@@ -68,35 +68,6 @@ export default function RegisterPage() {
     resolver: zodResolver(patientSchema),
   });
 
-  // const onSubmitStaff = async (values: StaffFormData) => {
-  //   setIsLoading(true);
-  //   try {
-  //     await register({
-  //       nombre: values.name,
-  //       email: values.email,
-  //       password: values.password,
-  //       role: values.role,
-  //       especialidad: values.especialidad || "General",
-  //       costoConsulta: values.costoConsulta ? Number(values.costoConsulta) : 500,
-  //     });
-  //
-  //     toast.success(`¡${values.role === "medico" ? "Médico" : "Personal"} registrado exitosamente!`);
-  //
-  //     // Redirigir según el rol
-  //     if (values.role === "medico") {
-  //       navigate("/doctor/dashboard");
-  //     } else {
-  //       navigate("/login");
-  //     }
-  //   } catch (error: any) {
-  //     const message = error.response?.data?.message || error.response?.data?.errors?.[0]?.msg || "Error al registrar. Intente nuevamente.";
-  //     toast.error(message);
-  //     console.error("Error registro staff:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const onSubmitPatient = async (values: PatientFormData) => {
     setIsLoading(true);
     try {

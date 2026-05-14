@@ -107,7 +107,7 @@ export async function getAvailableSlots(medicoId, fecha) {
  * Agendar una nueva cita
  */
 export async function crearCita(payload) {
-  const { pacienteId, medicoId, fechaHora, motivo } = payload;
+  const { pacienteId, medicoId, fechaHora, motivo, creadoPor } = payload;
 
   // Validar que paciente y médico existan
   const [paciente, medico] = await Promise.all([
@@ -145,6 +145,7 @@ export async function crearCita(payload) {
       motivo,
       estado: "programada",
       duracionMin: 30,
+      creadoPor: creadoPor || null,
     },
     include: {
       paciente: { select: { nombre: true, email: true } },
@@ -153,6 +154,63 @@ export async function crearCita(payload) {
   });
 
   return cita;
+}
+
+/**
+ * Editar una cita existente
+ */
+export async function editarCita(citaId, payload) {
+  const { fechaHora, medicoId, motivo } = payload;
+
+  const cita = await prisma.cita.findUnique({ where: { citaId } });
+
+  if (!cita) {
+    throw { status: 404, message: "Cita no encontrada" };
+  }
+
+  if (cita.estado !== "programada") {
+    throw { status: 400, message: "Solo se pueden editar citas programadas" };
+  }
+
+  // Si cambia la fecha u hora, validar disponibilidad
+  if (fechaHora && new Date(fechaHora).getTime() !== cita.fechaHora.getTime()) {
+    const citaExistente = await prisma.cita.findFirst({
+      where: {
+        citaId: { not: citaId },
+        medicoId: medicoId || cita.medicoId,
+        fechaHora: new Date(fechaHora),
+        estado: { in: ["programada", "completada"] },
+      },
+    });
+
+    if (citaExistente) {
+      throw { status: 400, message: "Ese horario ya está ocupado" };
+    }
+  }
+
+  // Validar que médico exista si se cambia
+  if (medicoId && medicoId !== cita.medicoId) {
+    const medico = await prisma.medico.findUnique({ where: { medicoId } });
+    if (!medico) {
+      throw { status: 404, message: "Médico no encontrado" };
+    }
+  }
+
+  // Actualizar la cita
+  const citaActualizada = await prisma.cita.update({
+    where: { citaId },
+    data: {
+      ...(fechaHora && { fechaHora: new Date(fechaHora) }),
+      ...(medicoId && { medicoId }),
+      ...(motivo && { motivo }),
+    },
+    include: {
+      paciente: { select: { nombre: true, email: true } },
+      medico: { select: { nombre: true, especialidad: true } },
+    },
+  });
+
+  return citaActualizada;
 }
 
 /**

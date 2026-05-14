@@ -1,6 +1,6 @@
 import { CalendarDays, ClipboardList, LayoutDashboard, LogOut, Stethoscope, UserCheck, UserRound, Users } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth, type UserRole } from "../../context/AuthContext";
 
 const doctorItems = [
   { to: "/doctor/dashboard", label: "Inicio", icon: LayoutDashboard },
@@ -25,6 +25,13 @@ const patientItems = [
   { to: "/patient/citas", label: "Mis Citas", icon: CalendarDays },
   { to: "/patient/expediente", label: "Mi Expediente", icon: ClipboardList },
   { to: "/patient/agendar", label: "Agendar Cita", icon: CalendarDays },
+];
+
+const recepcionistaItems = [
+  { to: "/recepcionista/dashboard", label: "Inicio", icon: LayoutDashboard },
+  { to: "/recepcionista/agendar", label: "Agendar Cita", icon: CalendarDays },
+  { to: "/recepcionista/citas", label: "Gestión de Citas", icon: ClipboardList },
+  { to: "/recepcionista/medicos", label: "Médicos", icon: UserRound },
 ];
 
 const portalLabel: Record<string, string> = {

@@ -10,6 +10,7 @@ import {
   getDoctorAppointments,
   cancelAppointment,
   markComplete,
+  editAppointment,
 } from "../controllers/appointment.controller.js";
 import { requireAuth, requireRole } from "../middleware/auth.middleware.js";
 
@@ -39,6 +40,18 @@ router.post(
     body("motivo").isLength({ min: 3 }),
   ],
   bookAppointment
+);
+
+// Editar una cita existente (recepcionista/medico)
+router.patch(
+  "/:citaId",
+  requireAuth,
+  [
+    body("fechaHora").optional().isISO8601(),
+    body("medicoId").optional().isUUID(),
+    body("motivo").optional().isLength({ min: 3 }),
+  ],
+  editAppointment
 );
 
 // Obtener mis citas (paciente autenticado)

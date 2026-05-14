@@ -8,6 +8,7 @@ import {
   getCitasByMedico,
   cancelarCita,
   completarCita,
+  editarCita,
 } from "../services/appointment.service.js";
 import { prisma } from "../config/prisma.js";
 
@@ -72,7 +73,15 @@ export async function bookAppointment(req, res, next) {
       return next(err);
     }
 
-    const cita = await crearCita(req.body);
+    // Agregar quién creó la cita (recepcionista o paciente)
+    const body = {
+      ...req.body,
+      creadoPor: req.user.role === "recepcionista" || req.user.role === "director" 
+        ? req.user.sub 
+        : null,
+    };
+
+    const cita = await crearCita(body);
     res.status(201).json(cita);
   } catch (error) {
     next(error);
@@ -175,6 +184,32 @@ export async function cancelAppointment(req, res, next) {
     const { motivoCancelacion } = req.body;
 
     const cita = await cancelarCita(citaId, motivoCancelacion);
+    res.json(cita);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Editar una cita (recepcionista/medico)
+ */
+export async function editAppointment(req, res, next) {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const err = new Error("Validation failed");
+      err.array = () => errors.array();
+      return next(err);
+    }
+
+    const { citaId } = req.params;
+    const { fechaHora, medicoId, motivo } = req.body;
+
+    const cita = await editarCita(citaId, {
+      fechaHora,
+      medicoId,
+      motivo,
+    });
     res.json(cita);
   } catch (error) {
     next(error);

@@ -12,6 +12,10 @@ import DirectorDashboardPage from "./pages/director/DirectorDashboardPage";
 import DirectorRegistrarMedicoPage from "./pages/director/DirectorRegistrarMedicoPage";
 import DirectorRegistrarRecepcionistaPage from "./pages/director/DirectorRegistrarRecepcionistaPage";
 import DirectorPersonalPage from "./pages/director/DirectorPersonalPage";
+import RecepcionistaDashboardPage from "./pages/recepcionista/RecepcionistaDashboardPage";
+import RecepcionistaCitasPage from "./pages/recepcionista/RecepcionistaCitasPage";
+import RecepcionistaMedicosPage from "./pages/recepcionista/RecepcionistaMedicosPage";
+import RecepcionistaBookPage from "./pages/recepcionista/RecepcionistaBookPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { RoleGuard } from "./routes/RoleGuard";
 
@@ -53,6 +57,13 @@ export default function App() {
           <Route path="/patient/agendar" element={<PatientBookPage />} />
         </Route>
 
+        {/* Rutas de recepcionista */}
+        <Route element={<RoleGuard role="recepcionista" />}>
+          <Route path="/recepcionista/dashboard" element={<RecepcionistaDashboardPage />} />
+          <Route path="/recepcionista/citas" element={<RecepcionistaCitasPage />} />
+          <Route path="/recepcionista/medicos" element={<RecepcionistaMedicosPage />} />
+          <Route path="/recepcionista/agendar" element={<RecepcionistaBookPage />} />
+        </Route>
       </Route>
     </Routes>
   );
