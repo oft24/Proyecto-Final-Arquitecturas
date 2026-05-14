@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const doctorItems = [
   { to: "/doctor/dashboard", label: "Inicio", icon: LayoutDashboard },
+  { to: "/doctor/atender", label: "Atender Citas", icon: ClipboardList },
   { to: "/doctor/agenda", label: "Mi Agenda", icon: CalendarDays },
   { to: "/doctor/pacientes", label: "Pacientes", icon: UserRound },
 ];
@@ -17,6 +18,8 @@ const directorItems = [
 
 const recepcionistaItems = [
   { to: "/recepcionista/dashboard", label: "Inicio", icon: LayoutDashboard },
+  { to: "/recepcionista/citas", label: "Citas", icon: CalendarDays },
+  { to: "/recepcionista/agendar", label: "Agendar Cita", icon: CalendarDays },
   { to: "/recepcionista/pacientes", label: "Pacientes", icon: UserRound },
 ];
 
