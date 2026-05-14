@@ -1,4 +1,4 @@
-import { CalendarDays, ClipboardList, LayoutDashboard, LogOut, UserRound } from "lucide-react";
+import { CalendarDays, ClipboardList, LayoutDashboard, LogOut, Stethoscope, UserCheck, UserRound, Users } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -7,6 +7,19 @@ const doctorItems = [
   { to: "/doctor/agenda", label: "Mi Agenda", icon: CalendarDays },
   { to: "/doctor/pacientes", label: "Pacientes", icon: UserRound },
 ];
+
+const directorItems = [
+  { to: "/director/dashboard", label: "Inicio", icon: LayoutDashboard },
+  { to: "/director/registrar-medico", label: "Registrar Médico", icon: Stethoscope },
+  { to: "/director/registrar-recepcionista", label: "Registrar Recepcionista", icon: UserCheck },
+  { to: "/director/personal", label: "Ver Personal", icon: Users },
+];
+
+const recepcionistaItems = [
+  { to: "/recepcionista/dashboard", label: "Inicio", icon: LayoutDashboard },
+  { to: "/recepcionista/pacientes", label: "Pacientes", icon: UserRound },
+];
+
 const patientItems = [
   { to: "/patient/dashboard", label: "Inicio", icon: LayoutDashboard },
   { to: "/patient/citas", label: "Mis Citas", icon: CalendarDays },
@@ -14,15 +27,27 @@ const patientItems = [
   { to: "/patient/agendar", label: "Agendar Cita", icon: CalendarDays },
 ];
 
+const portalLabel: Record<string, string> = {
+  medico: "Portal Médico",
+  director: "Portal Director",
+  recepcionista: "Portal Recepcionista",
+  paciente: "Portal del Paciente",
+};
+
 export function Sidebar() {
   const { user, logout } = useAuth();
-  const items = user?.rol === "medico" || user?.rol === "director" ? doctorItems : patientItems;
+
+  const items =
+    user?.rol === "medico" ? doctorItems :
+    user?.rol === "director" ? directorItems :
+    user?.rol === "recepcionista" ? recepcionistaItems :
+    patientItems;
 
   return (
     <aside className="flex h-screen w-64 flex-col justify-between border-r border-slate-200 bg-white p-4">
       <div>
         <h2 className="text-2xl font-bold text-blue-600">MediSync</h2>
-        <p className="mb-6 text-xs text-slate-500">{user?.rol === "medico" || user?.rol === "director" ? "Portal Medico" : "Portal del Paciente"}</p>
+        <p className="mb-6 text-xs text-slate-500">{portalLabel[user?.rol ?? "paciente"]}</p>
         <nav className="space-y-1">
           {items.map((item) => (
             <NavLink

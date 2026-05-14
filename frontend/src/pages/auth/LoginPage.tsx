@@ -30,19 +30,21 @@ export default function LoginPage() {
     try {
       await login(values.email, values.password);
       toast.success("Sesion iniciada");
-      
+
       // Obtener los datos del usuario para navegar
       const savedUser = localStorage.getItem("user");
       if (savedUser) {
         const userData = JSON.parse(savedUser);
         const rol = userData.rol as UserRole;
-        
+
         // Navegar según el rol
-        if (rol === "medico" || rol === "director") {
+        if (rol === "medico") {
           navigate("/doctor/dashboard", { replace: true });
-        } else if (rol === "paciente") {
-          navigate("/patient/dashboard", { replace: true });
+        } else if (rol === "director") {
+          navigate("/director/dashboard", { replace: true });
         } else if (rol === "recepcionista") {
+          navigate("/recepcionista/dashboard", { replace: true });
+        } else if (rol === "paciente") {
           navigate("/patient/dashboard", { replace: true });
         }
       }
