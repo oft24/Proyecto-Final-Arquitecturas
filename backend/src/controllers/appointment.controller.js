@@ -216,10 +216,21 @@ export async function updateAppointment(req, res, next) {
     }
 
     const nuevoMedicoId = medicoId || cita.medicoId;
-    const nuevaFecha = fechaHora ? new Date(fechaHora) : cita.fechaHora;
+    
+    // CORRECCIÓN: Parseo correcto de ISO8601 sin conversión errada
+    // Si recibimos "2026-05-14T14:30:00.000Z", debe guardarse EXACTAMENTE así
+    let nuevaFecha = cita.fechaHora;
+    if (fechaHora) {
+      nuevaFecha = new Date(fechaHora);
+      // Validar que sea una fecha válida
+      if (isNaN(nuevaFecha.getTime())) {
+        return res.status(400).json({ message: "Formato de fecha inválido" });
+      }
+    }
 
     // Verificar conflicto de horario si cambia fecha o médico
     if (fechaHora || medicoId) {
+      // Búsqueda exacta: mismo médico, mismo horario (ISO string exacto)
       const conflicto = await prisma.cita.findFirst({
         where: {
           citaId: { not: citaId },

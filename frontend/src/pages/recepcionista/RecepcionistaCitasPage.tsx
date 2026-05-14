@@ -9,6 +9,7 @@ import { DashboardLayout } from "../../components/layout/DashboardLayout";
 import { Header } from "../../components/layout/Header";
 import { Input } from "../../components/ui/Input";
 import { api } from "../../lib/api";
+import { isoToLocalDateString, formatDateForDisplay } from "../../lib/dateUtils";
 
 interface Cita {
   citaId: string;
@@ -113,7 +114,9 @@ export default function RecepcionistaCitasPage() {
   const abrirEditar = (c: Cita) => {
     setEditCita(c);
     setEditMedicoId(c.medicoId);
-    setEditFecha(c.fecha ? c.fecha.split("T")[0] : "");
+    // CORRECCIÓN: Usar función utilitaria para convertir ISO a fecha local
+    // Esto evita desfases de timezone al editar
+    setEditFecha(c.fecha ? isoToLocalDateString(c.fecha) : "");
     setEditSlot("");
     setEditSlots([]);
     setEditMotivo(c.motivo || "");
@@ -201,11 +204,7 @@ export default function RecepcionistaCitasPage() {
   };
 
   const formatFecha = (f: string) =>
-    new Date(f).toLocaleDateString("es-ES", {
-      day: "2-digit", month: "short", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
-      timeZone: "UTC",
-    });
+    formatDateForDisplay(f, true);
 
   const estadoBadge = (estado: string) => {
     const map: Record<string, string> = {
