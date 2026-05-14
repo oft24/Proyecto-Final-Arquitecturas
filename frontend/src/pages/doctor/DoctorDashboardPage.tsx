@@ -125,7 +125,6 @@ export default function DoctorDashboardPage() {
         <div className="card-shell p-4">
           <div className="mb-3 flex items-center justify-between rounded-xl bg-blue-600 p-3 text-white">
             <h3 className="font-semibold">Próximas Citas</h3>
-            <button className="rounded bg-white px-3 py-1 text-xs font-semibold text-slate-900">+ Nueva Cita</button>
           </div>
           {data.proximasCitas.length === 0 ? (
             <p className="p-4 text-center text-slate-500">No hay citas programadas</p>
@@ -142,14 +141,6 @@ export default function DoctorDashboardPage() {
           )}
         </div>
         <div className="space-y-4">
-          <div className="card-shell p-4">
-            <h3 className="mb-3 text-lg font-semibold">Acciones Rapidas</h3>
-            <div className="space-y-2">
-              <button className="w-full rounded-lg bg-blue-600 px-3 py-2 text-left text-sm font-semibold text-white">Nueva Cita</button>
-              <button className="w-full rounded-lg border border-slate-300 px-3 py-2 text-left text-sm">Buscar Paciente</button>
-              <button className="w-full rounded-lg border border-slate-300 px-3 py-2 text-left text-sm">Ver Agenda Semanal</button>
-            </div>
-          </div>
           {data.alerts.length > 0 && (
             <div className="card-shell bg-amber-50 p-4">
               <h3 className="mb-3 text-lg font-semibold text-amber-900">Alertas</h3>

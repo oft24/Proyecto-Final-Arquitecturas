@@ -276,7 +276,7 @@ export default function DoctorAgendaPage() {
 
         {/* PANEL DEL DÍA */}
         <section className="card-shell flex flex-col overflow-hidden">
-          <div className="flex items-start justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-4 text-white">
+          <div className="border-b border-slate-100 bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-4 text-white">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-100">Agenda del día</p>
               <h3 className="mt-0.5 text-base font-bold capitalize leading-tight">{selectedLong}</h3>
@@ -284,12 +284,6 @@ export default function DoctorAgendaPage() {
                 {selectedAppointments.length} {selectedAppointments.length === 1 ? "cita programada" : "citas programadas"}
               </p>
             </div>
-            <button
-              className="inline-flex items-center gap-1 rounded-lg bg-white/15 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur transition hover:bg-white/25 focus:outline-none focus:ring-2 focus:ring-white/60"
-              title="Nueva cita"
-            >
-              <Plus className="h-3.5 w-3.5" /> Nueva
-            </button>
           </div>
 
           <div className="flex-1 space-y-3 p-4">
