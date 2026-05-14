@@ -1,4 +1,4 @@
-import { CalendarDays, ClipboardList, LayoutDashboard, LogOut, Stethoscope, UserCheck, UserRound, Users } from "lucide-react";
+import { Activity, CalendarDays, ClipboardList, LayoutDashboard, LogOut, Stethoscope, UserCheck, UserRound, Users } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -13,6 +13,7 @@ const directorItems = [
   { to: "/director/dashboard", label: "Inicio", icon: LayoutDashboard },
   { to: "/director/registrar-medico", label: "Registrar Médico", icon: Stethoscope },
   { to: "/director/registrar-recepcionista", label: "Registrar Recepcionista", icon: UserCheck },
+  { to: "/director/medicos", label: "Médicos & Stats", icon: Activity },
   { to: "/director/personal", label: "Ver Personal", icon: Users },
 ];
 

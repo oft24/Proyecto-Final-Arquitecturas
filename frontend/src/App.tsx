@@ -13,6 +13,7 @@ import DirectorDashboardPage from "./pages/director/DirectorDashboardPage";
 import DirectorRegistrarMedicoPage from "./pages/director/DirectorRegistrarMedicoPage";
 import DirectorRegistrarRecepcionistaPage from "./pages/director/DirectorRegistrarRecepcionistaPage";
 import DirectorPersonalPage from "./pages/director/DirectorPersonalPage";
+import DirectorMedicosPage from "./pages/director/DirectorMedicosPage";
 import RecepcionistaDashboardPage from "./pages/recepcionista/RecepcionistaDashboardPage";
 import RecepcionistaCitasPage from "./pages/recepcionista/RecepcionistaCitasPage";
 import RecepcionistaAgendarPage from "./pages/recepcionista/RecepcionistaAgendarPage";
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/director/registrar-medico" element={<DirectorRegistrarMedicoPage />} />
           <Route path="/director/registrar-recepcionista" element={<DirectorRegistrarRecepcionistaPage />} />
           <Route path="/director/personal" element={<DirectorPersonalPage />} />
+          <Route path="/director/medicos" element={<DirectorMedicosPage />} />
         </Route>
 
         {/* Rutas de recepcionista */}
